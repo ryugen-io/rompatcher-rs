@@ -1,70 +1,115 @@
-# Test ROM Patches
+# Test Patch Files
 
 Test patches for validating rom-patcher-rs implementation across all supported formats.
 
-## Test Suite Sources
+All patches are stored as generic filenames (patch.ips, patch.bps, etc.) in their respective format directories.
 
-Based on RomPatcher.js test suite, using real-world ROM hacks:
+## Required Base ROMs
 
-### IPS Format
+To use these test patches, you need the exact base ROM files listed below. The patches in this repository are:
+
+- **Legally redistributable** - The patches themselves are free to distribute
+- **Format-specific** - Each patch validates a different patch format implementation
+- **Checksum-validated** - Tests verify output matches expected checksums
+
+### IPS Format (`ips/patch.ips`)
 - **Patch**: Super Mario Land 2 DX v1.8.1
-- **Console**: Game Boy
-- **Source**: https://www.romhacking.net/hacks/3784/
-- **Base ROM**: Super Mario Land 2 - 6 Golden Coins (UE) (V1.0)
-- **Base SHA1**: bba408539ecbf8d322324956d859bc86e2a9977b
+- **Patch Source**: https://www.romhacking.net/hacks/3784/
+- **Required Base ROM**: Super Mario Land 2 - 6 Golden Coins (UE) (V1.0) [!].gb
+- **ROM Region**: USA/Europe
+- **ROM Size**: 512 KB (524,288 bytes)
+- **ROM CRC32**: 0xd5ec24e4
+- **ROM SHA1**: bba408539ecbf8d322324956d859bc86e2a9977b
+- **Expected Output CRC32**: 0xf0799017 (validated against RomPatcherJS)
 
-### BPS Format
+### BPS Format (`bps/patch.bps`)
 - **Patch**: Samurai Kid English Translation
+- **Patch Source**: https://www.romhacking.net/translations/6297/
+- **Required Base ROM**: Samurai Kid (Japan).gbc
+- **ROM Region**: Japan
 - **Console**: Game Boy Color
-- **Source**: https://www.romhacking.net/translations/6297/
-- **Base ROM**: Samurai Kid (Japan)
+- **Note**: BPS format validation only (not yet implemented)
 
-### UPS Format
+### UPS Format (`ups/patch.ups`)
 - **Patch**: Mother 3 English Translation v1.3
+- **Patch Source**: https://www.romhacking.net/translations/1333/ or https://mother3.fobby.net/
+- **Required Base ROM**: Mother 3 (Japan).gba
+- **ROM Region**: Japan
+- **ROM Size**: 32 MB
 - **Console**: Game Boy Advance
-- **Source**: https://www.romhacking.net/translations/1333/
-- **Alt Source**: https://mother3.fobby.net/
-- **Base ROM**: Mother 3 (Japan)
-- **Base Size**: 32 MB
+- **Note**: UPS format validation only (not yet implemented)
 
-### APS Format (N64)
+### APS Format - N64 (`aps_n64/patch.aps`)
 - **Patch**: The Legend of Zelda: Ocarina of Time Spanish Translation
+- **Patch Source**: https://www.romhacking.net/translations/1054/
+- **Required Base ROM**: The Legend of Zelda: Ocarina of Time (USA).z64
+- **ROM Region**: USA
 - **Console**: Nintendo 64
-- **Source**: https://www.romhacking.net/translations/1054/
-- **Base ROM**: The Legend of Zelda: Ocarina of Time (USA)
+- **Note**: APS N64 format validation only (not yet implemented)
 
-### APS Format (GBA)
-- **Patch**: Final Fantasy Tactics Advance X
-- **Console**: Game Boy Advance
-- **Source**: Search romhacking.net for FFTA hacks
-- **Base ROM**: Final Fantasy Tactics Advance (USA/Europe)
-
-### RUP Format (NINJA2)
-- **Patch**: Uchuu no Kishi: Tekkaman Blade English Translation
-- **Console**: Super Nintendo
-- **Source**: https://www.romhacking.net/translations/843
-- **Format**: NINJA format (RUP)
-- **Base ROM**: Uchuu no Kishi: Tekkaman Blade (Japan)
-
-### PPF Format
+### PPF Format (`ppf/patch.ppf`)
 - **Patch**: Vagrant Story Retranslation
+- **Patch Source**: https://www.romhacking.net/translations/5411/
+- **Required Base ROM**: Vagrant Story (USA).bin
+- **ROM Region**: USA
 - **Console**: PlayStation
-- **Source**: https://www.romhacking.net/translations/5411/
-- **Base ROM**: Vagrant Story (USA)
 - **Format**: PPF3
+- **Note**: PPF format validation only (not yet implemented)
 
-### xdelta Format (VCDIFF)
+### RUP Format (`rup/patch.rup`)
+- **Patch**: Uchuu no Kishi: Tekkaman Blade English Translation
+- **Patch Source**: https://www.romhacking.net/translations/843
+- **Required Base ROM**: Uchuu no Kishi: Tekkaman Blade (Japan).smc
+- **ROM Region**: Japan
+- **Console**: Super Nintendo
+- **Format**: NINJA2/RUP format
+- **Note**: RUP format validation only (not yet implemented)
+
+### xdelta Format (`xdelta/patch.xdelta`)
 - **Patch**: New Super Mario Bros. - Domain Infusion
+- **Patch Source**: Search romhacking.net for "NSMB Domain Infusion"
+- **Required Base ROM**: New Super Mario Bros (USA).nds
+- **ROM Region**: USA
 - **Console**: Nintendo DS
-- **Source**: Search for NSMB ROM hacks
 - **Format**: xdelta/VCDIFF
+- **Note**: xdelta format validation only (not yet implemented)
 
-## Usage
+## Usage Instructions
 
-1. Download base ROMs (you must own legitimate copies)
-2. Download patch files from sources above
-3. Place in respective format directories
-4. Run integration tests: `cargo test --test integration_test`
+### Step 1: Obtain Base ROMs
+
+You must provide your own legally obtained ROM files. The required ROMs are listed above with their exact filenames and checksums.
+
+**For the IPS test specifically:**
+- Place `Super Mario Land 2 - 6 Golden Coins (UE) (V1.0) [!].gb` in `test_files/ips/`
+- Verify CRC32 checksum: `0xd5ec24e4`
+- File size must be exactly 524,288 bytes (512 KB)
+
+### Step 2: Directory Structure
+
+```
+test_files/
+├── ips/
+│   ├── patch.ips                    (included in repo)
+│   └── Super Mario Land 2 (...).gb  (you provide)
+├── bps/
+│   ├── patch.bps                    (included in repo)
+│   └── Samurai Kid (Japan).gbc      (you provide)
+├── ups/
+│   ├── patch.ups                    (included in repo)
+│   └── Mother 3 (Japan).gba         (you provide)
+└── ... (other formats)
+```
+
+### Step 3: Run Tests
+
+```bash
+# Run all IPS integration tests (including checksum validation)
+cargo test --test ips_integration
+
+# Run specific checksum validation test
+cargo test test_sml2dx_patch_checksum
+```
 
 ## Legal Notice
 
