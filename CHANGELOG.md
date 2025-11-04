@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (create, info, validate)
 
+## [0.1.4] - 2025-11-04
+
+### Added
+- Nintendo DS (NDS) console support for RetroAchievements
+- Nintendo 3DS (3DS/CCI/CXI) console support for RetroAchievements
+- File extension detection for .nds, .3ds, .cci, .cxi formats
+
 ## [0.1.3] - 2025-11-04
 
 ### Added
