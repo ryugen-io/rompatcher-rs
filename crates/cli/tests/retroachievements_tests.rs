@@ -23,6 +23,10 @@ fn test_detect_console_nintendo() {
     assert_eq!(detect_console(Path::new("game.sfc")), Some(Console::Snes));
     assert_eq!(detect_console(Path::new("game.n64")), Some(Console::N64));
     assert_eq!(detect_console(Path::new("game.z64")), Some(Console::N64));
+    assert_eq!(detect_console(Path::new("game.nds")), Some(Console::Nds));
+    assert_eq!(detect_console(Path::new("game.3ds")), Some(Console::N3ds));
+    assert_eq!(detect_console(Path::new("game.cci")), Some(Console::N3ds));
+    assert_eq!(detect_console(Path::new("game.cxi")), Some(Console::N3ds));
 }
 
 #[test]
