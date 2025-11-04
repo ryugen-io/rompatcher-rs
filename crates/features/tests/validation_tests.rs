@@ -2,6 +2,9 @@
 
 use rom_patcher_features::validation::{HashAlgorithm, ValidationFeature, Validator};
 
+#[cfg(feature = "validation")]
+use rom_patcher_features::validation::algorithms::md5;
+
 #[test]
 fn test_crc32_empty() {
     let data = b"";
@@ -43,4 +46,40 @@ fn test_validation() {
             .validate_checksum(data, &wrong_hash, HashAlgorithm::Crc32)
             .is_err()
     );
+}
+
+#[test]
+#[cfg(feature = "validation")]
+fn test_md5_empty() {
+    let data = b"";
+    let hash = md5::compute(data);
+    assert_eq!(hash, "d41d8cd98f00b204e9800998ecf8427e");
+}
+
+#[test]
+#[cfg(feature = "validation")]
+fn test_md5_known_values() {
+    // Test "The quick brown fox jumps over the lazy dog"
+    let data = b"The quick brown fox jumps over the lazy dog";
+    let hash = md5::compute(data);
+    assert_eq!(hash, "9e107d9d372bb6826bd81d3542a419d6");
+
+    // Test "123456789"
+    let data = b"123456789";
+    let hash = md5::compute(data);
+    assert_eq!(hash, "25f9e794323b453885f5181f1b624d0b");
+
+    // Test single byte
+    let data = b"a";
+    let hash = md5::compute(data);
+    assert_eq!(hash, "0cc175b9c0f1b6a831c399e269772661");
+}
+
+#[test]
+#[cfg(feature = "validation")]
+fn test_md5_binary_data() {
+    // Test with binary data (not just ASCII)
+    let data: &[u8] = &[0x00, 0x01, 0x02, 0xFF, 0xFE, 0xFD];
+    let hash = md5::compute(data);
+    assert_eq!(hash, "a7ade6f11cc9c0580eca571bef517069");
 }
