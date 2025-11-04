@@ -11,6 +11,8 @@ pub enum Console {
     Gb,
     Gbc,
     Gba,
+    Nds,
+    N3ds,
     Genesis,
     MasterSystem,
     GameGear,
