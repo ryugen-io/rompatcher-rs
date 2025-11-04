@@ -18,6 +18,8 @@ pub fn detect_console(path: &Path) -> Option<Console> {
         "gb" => Some(Console::Gb),
         "gbc" => Some(Console::Gbc),
         "gba" => Some(Console::Gba),
+        "nds" => Some(Console::Nds),
+        "3ds" | "cci" | "cxi" => Some(Console::N3ds),
         "gen" | "md" | "smd" => Some(Console::Genesis),
         "sms" => Some(Console::MasterSystem),
         "gg" => Some(Console::GameGear),
