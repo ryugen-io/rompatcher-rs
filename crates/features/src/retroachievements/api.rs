@@ -1,32 +1,61 @@
 //! RetroAchievements API client
 
-use std::sync::Mutex;
-use std::time::{Duration, Instant};
+use std::env;
+use std::fs;
+use std::path::PathBuf;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 const RA_API_BASE: &str = "https://retroachievements.org";
 const RA_USER_AGENT: &str = "rom-patcher-rs/0.1";
 const RATE_LIMIT_MS: u64 = 500; // 500ms between requests
 
-/// Rate limiter for API requests
-struct RateLimiter {
-    last_request: Option<Instant>,
+/// Get path to rate limit file in XDG cache directory
+fn get_rate_limit_file() -> Result<PathBuf, String> {
+    let cache_dir = if let Ok(xdg_cache) = env::var("XDG_CACHE_HOME") {
+        PathBuf::from(xdg_cache)
+    } else {
+        let home = env::var("HOME").map_err(|_| "HOME environment variable not set")?;
+        PathBuf::from(home).join(".cache")
+    };
+
+    let app_cache = cache_dir.join("rom-patcher-rs");
+    fs::create_dir_all(&app_cache)
+        .map_err(|e| format!("Failed to create cache directory: {}", e))?;
+
+    Ok(app_cache.join("ra-last-request"))
 }
 
-impl RateLimiter {
-    fn wait_if_needed(&mut self) {
-        if let Some(last) = self.last_request {
-            let elapsed = last.elapsed();
-            let min_delay = Duration::from_millis(RATE_LIMIT_MS);
+/// File-based rate limiter (works across process invocations)
+fn wait_if_needed() -> Result<(), String> {
+    let rate_file = get_rate_limit_file()?;
 
-            if elapsed < min_delay {
-                std::thread::sleep(min_delay - elapsed);
-            }
+    // Read last request timestamp if file exists
+    if let Ok(contents) = fs::read_to_string(&rate_file)
+        && let Ok(last_ts) = contents.trim().parse::<u64>()
+    {
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64;
+
+        let elapsed = now.saturating_sub(last_ts);
+
+        if elapsed < RATE_LIMIT_MS {
+            std::thread::sleep(Duration::from_millis(RATE_LIMIT_MS - elapsed));
         }
-        self.last_request = Some(Instant::now());
     }
-}
 
-static RATE_LIMITER: Mutex<RateLimiter> = Mutex::new(RateLimiter { last_request: None });
+    // Write new timestamp
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_millis();
+
+    fs::write(&rate_file, now.to_string())
+        .map_err(|e| format!("Failed to write rate limit file: {}", e))?;
+
+    Ok(())
+}
 
 /// API response for game ID lookup
 #[derive(serde::Deserialize, Debug)]
@@ -39,11 +68,8 @@ pub struct GameIdResponse {
 
 /// Look up game ID by MD5 hash
 pub fn lookup_game_by_hash(md5_hash: &str) -> Result<Option<u32>, String> {
-    // Rate limit
-    RATE_LIMITER
-        .lock()
-        .map_err(|e| format!("Rate limiter error: {}", e))?
-        .wait_if_needed();
+    // Rate limit (file-based, works across process invocations)
+    wait_if_needed()?;
 
     // Build URL
     let url = format!("{}/dorequest.php?r=gameid&m={}", RA_API_BASE, md5_hash);
