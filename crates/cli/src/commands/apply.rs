@@ -93,6 +93,12 @@ pub fn execute(rom_path: PathBuf, patch_path: PathBuf, output_path: Option<PathB
         );
     }
 
+    // RetroAchievements hash check (if enabled)
+    #[cfg(feature = "retroachievements")]
+    {
+        crate::utils::retroachievements::check_and_display(&patched_rom, &output_path);
+    }
+
     Ok(())
 }
 
