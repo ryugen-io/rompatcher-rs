@@ -18,6 +18,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (create, info, validate)
 
+## [0.1.5] - 2025-11-05
+
+### Changed
+- Binary size optimization: 3.9MB → 2.0MB (-48%)
+- Added release profile with LTO, size optimization, and symbol stripping
+- Compile time increased (more optimization passes)
+
+### Technical
+- opt-level = "z" (optimize for size)
+- lto = true (link-time optimization)
+- strip = true (automatic symbol stripping)
+- codegen-units = 1 (better optimization)
+- panic = "abort" (smaller panic handler)
+
 ## [0.1.4] - 2025-11-04
 
 ### Added
