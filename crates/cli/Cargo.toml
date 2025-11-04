@@ -1,0 +1,25 @@
+[package]
+name = "rom-patcher-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Command-line interface for ROM patching"
+
+[[bin]]
+name = "rompatch"
+path = "src/main.rs"
+
+[dependencies]
+rom-patcher-core = { path = "../core" }
+rom-patcher-formats = { path = "../formats" }
+rom-patcher-features = { path = "../features" }
+anyhow.workspace = true
+clap = { version = "4.5", features = ["derive"] }
+
+[features]
+default = []
+validation = ["rom-patcher-features/validation"]
+retroachievements = ["rom-patcher-features/retroachievements"]
