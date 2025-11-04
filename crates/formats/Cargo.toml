@@ -1,0 +1,32 @@
+[package]
+name = "rom-patcher-formats"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Patch format implementations (IPS, BPS, UPS, APS, RUP, PPF, xdelta)"
+
+[dependencies]
+rom-patcher-core = { path = "../core" }
+thiserror.workspace = true
+
+[dev-dependencies]
+criterion = "0.5"
+rom-patcher-features = { path = "../features" }
+
+[features]
+default = ["ips", "bps", "ups", "aps", "rup", "ppf", "xdelta"]
+ips = []
+bps = []
+ups = []
+aps = []
+rup = []
+ppf = []
+xdelta = []
+
+[[bench]]
+name = "ips_bench"
+harness = false
+required-features = ["ips"]
