@@ -18,6 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (create, info, validate)
 
+## [0.1.2] - 2025-11-04
+
+### Changed
+- Rate limiting now uses file-based storage (XDG_CACHE_HOME) instead of in-process mutex
+- Rate limiting now works across multiple process invocations (multiple rompatch calls)
+
+### Fixed
+- Rate limiter now properly prevents API spam when user runs multiple patches quickly
+
 ## [0.1.1] - 2025-11-04
 
 ### Added
