@@ -1,0 +1,18 @@
+[package]
+name = "rom-patcher-features"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Extended features for ROM patching (validation, hash checking, etc.)"
+
+[dependencies]
+rom-patcher-core = { path = "../core" }
+thiserror.workspace = true
+
+[features]
+default = ["validation"]
+validation = []
+retroachievements = []
