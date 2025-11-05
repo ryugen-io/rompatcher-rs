@@ -22,9 +22,13 @@ struct Cli {
 
     /// Output path (optional, defaults to {rom_dir}/patched/{rom}.patched.{ext})
     output: Option<PathBuf>,
+
+    /// Verify source/target checksums (slower, safer)
+    #[arg(long)]
+    verify: bool,
 }
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    commands::apply::execute(cli.rom, cli.patch, cli.output)
+    commands::apply::execute(cli.rom, cli.patch, cli.output, cli.verify)
 }
