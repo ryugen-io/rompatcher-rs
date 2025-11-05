@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.2.8-patch.5] - 2025-11-05
+
+### Changed
+- Modularized APS GBA apply tests into separate modules
+  - Split apply_tests.rs (115 lines) into 5 modules: helpers.rs, basic_tests.rs, record_tests.rs, resize_tests.rs, error_tests.rs
+  - All 24 tests passing
+
 ## [0.2.8-patch.4] - 2025-11-05
 
 ### Changed
