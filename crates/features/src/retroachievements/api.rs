@@ -1,5 +1,6 @@
 //! RetroAchievements API client
 
+use super::parser::parse_game_id_response;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -57,15 +58,6 @@ fn wait_if_needed() -> Result<(), String> {
     Ok(())
 }
 
-/// API response for game ID lookup
-#[derive(serde::Deserialize, Debug)]
-pub struct GameIdResponse {
-    #[serde(rename = "Success")]
-    pub success: bool,
-    #[serde(rename = "GameID")]
-    pub game_id: u32,
-}
-
 /// Look up game ID by MD5 hash
 pub fn lookup_game_by_hash(md5_hash: &str) -> Result<Option<u32>, String> {
     // Rate limit (file-based, works across process invocations)
@@ -75,21 +67,18 @@ pub fn lookup_game_by_hash(md5_hash: &str) -> Result<Option<u32>, String> {
     let url = format!("{}/dorequest.php?r=gameid&m={}", RA_API_BASE, md5_hash);
 
     // Make request
-    let response = ureq::get(&url)
-        .set("User-Agent", RA_USER_AGENT)
-        .call()
+    let response = minreq::get(&url)
+        .with_header("User-Agent", RA_USER_AGENT)
+        .send()
         .map_err(|e| format!("API request failed: {}", e))?;
 
-    // Parse response
-    let game_response: GameIdResponse = response
-        .into_json()
-        .map_err(|e| format!("Failed to parse response: {}", e))?;
+    // Read response as string (no allocation - just borrow)
+    let json = response
+        .as_str()
+        .map_err(|e| format!("Failed to read response: {}", e))?;
 
-    if game_response.success && game_response.game_id > 0 {
-        Ok(Some(game_response.game_id))
-    } else {
-        Ok(None)
-    }
+    // Parse manually (no serde needed!)
+    parse_game_id_response(json)
 }
 
 /// Get RetroAchievements game URL
