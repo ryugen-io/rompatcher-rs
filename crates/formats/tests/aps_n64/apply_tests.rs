@@ -18,6 +18,16 @@ fn make_header(output_size: u32) -> Vec<u8> {
 }
 
 #[test]
+fn test_can_handle() {
+    let valid_patch = make_header(1024);
+
+    assert!(ApsN64Patcher::can_handle(&valid_patch));
+    assert!(!ApsN64Patcher::can_handle(b"NOTAPS"));
+    assert!(!ApsN64Patcher::can_handle(b"APS"));
+    assert!(!ApsN64Patcher::can_handle(b""));
+}
+
+#[test]
 fn test_apply_simple_record() {
     let mut patch = make_header(512);
     patch.extend_from_slice(&0x100u32.to_le_bytes());
