@@ -5,15 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.4] - 2025-11-05
 
-### Planned
-- APS format implementation for N64 and GBA
-- RUP (Rupture) format implementation
-- PPF (PlayStation Patch Format) implementation
-- xdelta format implementation
-- SHA-1, SHA-256 hash algorithms
-- Additional CLI commands (info, validate)
+### Added
+- APS N64 format implementation
+  - Full support for Nintendo 64 ROM patches
+  - Simple and RLE record types
+  - N64 header validation (Cart ID, CRC checksums)
+  - Modular structure under aps/n64/ directory
+  - 17 integration tests matching IPS/BPS/UPS parity
+  - Real patch testing with Zelda OoT Spanish translation
+  - All modules under 200 lines
+
+### Changed
+- Reduced test file sizes using helper functions
+  - apply_tests.rs: 174 → 97 lines
+  - Consistent with other format test patterns
 
 ## [0.2.3] - 2025-11-05
 
