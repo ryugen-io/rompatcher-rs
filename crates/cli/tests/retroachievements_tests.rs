@@ -57,6 +57,8 @@ fn test_detect_console_playstation() {
     assert_eq!(detect_console(Path::new("game.bin")), Some(Console::Psx));
     assert_eq!(detect_console(Path::new("game.cue")), Some(Console::Psx));
     assert_eq!(detect_console(Path::new("game.iso")), Some(Console::Ps2));
+    assert_eq!(detect_console(Path::new("game.cso")), Some(Console::Psp));
+    assert_eq!(detect_console(Path::new("game.pbp")), Some(Console::Psp));
 }
 
 #[test]
