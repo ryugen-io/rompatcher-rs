@@ -2,7 +2,7 @@
 
 use anyhow::{Context, Result};
 use rom_patcher_core::PatchFormat;
-use rom_patcher_formats::{detect_format, ips::IpsPatcher};
+use rom_patcher_formats::{bps::BpsPatcher, detect_format, ips::IpsPatcher};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -138,6 +138,10 @@ fn apply_patch_by_type(
     match patch_type {
         PatchType::Ips => {
             let patcher = IpsPatcher;
+            patcher.apply(rom, patch)?;
+        }
+        PatchType::Bps => {
+            let patcher = BpsPatcher;
             patcher.apply(rom, patch)?;
         }
         _ => {
