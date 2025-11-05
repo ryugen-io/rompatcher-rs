@@ -59,6 +59,7 @@ fn write_varint(buf: &mut Vec<u8>, mut data: u64) {
 
 fn bench_bps_apply(c: &mut Criterion) {
     let mut group = c.benchmark_group("bps_apply");
+    group.measurement_time(std::time::Duration::from_secs(15)); // Ensure no warnings for large files
 
     // Test various ROM sizes (BPS has no size limit like IPS's 16MB)
     for size in [
