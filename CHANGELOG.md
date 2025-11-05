@@ -17,6 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (create, info, validate)
 
+## [0.1.8-patch.3] - 2025-11-05
+
+### Added
+- BPS test coverage parity with IPS (17 tests each)
+  - Added test_validate_valid_patch - validates minimal valid BPS patch
+  - Added test_validate_with_actions - validates BPS patch with actions
+  - Added test_apply_empty_patch - tests identity patch (source = target)
+  - Total BPS tests: 17 (was 14)
+
 ## [0.1.8-patch.2] - 2025-11-05
 
 ### Fixed
