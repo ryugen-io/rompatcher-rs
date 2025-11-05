@@ -2,14 +2,15 @@
 
 A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 
-**Current Status:** v0.2.4 | 94 Tests | Binary: 1.4MB (with RA)
+**Current Status:** v0.2.8-patch.8 | 141 Tests | Binary: 1.4MB (with RA)
 
 ## Supported Formats
 
-- **IPS** (International Patching System) - Production Ready (17 tests)
-- **BPS** (Beat Patching System) - Production Ready (17 tests)
-- **UPS** (Universal Patching System) - Production Ready (17 tests)
-- **APS** (Nintendo 64 APS Format) - Production Ready (17 tests, v0.2.4)
+- **IPS** (International Patching System) - Production Ready (20 tests)
+- **BPS** (Beat Patching System) - Production Ready (28 tests)
+- **UPS** (Universal Patching System) - Production Ready (26 tests)
+- **APS N64** (Nintendo 64 APS Format) - Production Ready (24 tests)
+- **APS GBA** (Game Boy Advance APS Format) - Production Ready (24 tests)
 - **RUP** (Rupture Patches) - Planned
 - **PPF** (PlayStation Patch Format) - Planned
 - **xdelta** (Generic binary diff) - Planned
@@ -17,7 +18,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 ## Features
 
 ### Implemented
-- **Apply patches:** IPS, BPS, UPS, APS N64 formats with automatic detection
+- **Apply patches:** IPS, BPS, UPS, APS N64, APS GBA formats with automatic detection
 - **Validation:** Optional CRC32 verification via --verify flag (patch integrity + source/target checksums)
 - **Hashing:** CRC32 and MD5 computation
 - **RetroAchievements:** Console detection + hash verification
@@ -25,7 +26,6 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 - **Safety:** Transactional patching with automatic rollback on error
 
 ### Planned
-- APS GBA format support
 - RUP, PPF, xdelta format support
 - SHA-1, SHA-256 checksums
 - Additional output options and verbosity controls
@@ -142,28 +142,42 @@ MIT OR Apache-2.0
 
 ## Performance
 
-Benchmarked on various ROM sizes:
+Benchmarked on various ROM sizes (v0.2.8-patch.8):
 
-- **IPS apply (16MB):** 304 µs
-- **BPS apply (1MB):** 268 µs (30% faster with optional verification)
-- **BPS apply (16MB):** 4.8 ms
-- **BPS validate:** 42 ns (constant time - patch CRC32 only)
-- **UPS apply (1MB):** 17 µs
-- **UPS apply (16MB):** 306 µs
-- **UPS apply (32MB):** 10.3 ms
-- **UPS validate:** 64 ns (constant time - patch CRC32 only)
-- **APS apply (16MB):** TBD µs
-- **APS apply (32MB):** TBD µs
-- **APS validate:** TBD ns (constant time - header validation only)
-- **Binary size:** 1.4MB (optimized with LTO + strip + minreq)
+### Apply Performance
+
+| Format | 1KB | 100KB | 1MB | 4MB | 16MB |
+|--------|-----|-------|-----|-----|------|
+| **IPS** | 59ns | 1.4µs | 15.8µs | 73µs | 291µs |
+| **BPS** | 98ns | 1.4µs | 267µs | 1.2ms | 5.1ms |
+| **UPS** | 67ns | 1.4µs | 16µs | 73.7µs | 292µs |
+| **APS N64** | 139ns | 3.5µs | 572µs | 2.4ms | 9.7ms |
+| **APS GBA** | 1.8µs | 57µs | 96µs | 227µs | 10ms |
+
+### Validation Performance (constant time)
+
+- **IPS validate:** ~18ns (magic + size check)
+- **BPS validate:** ~37-46ns (magic + varint + bounds)
+- **UPS validate:** ~18-29ns (magic + size check)
+- **APS N64 validate:** ~63ns (magic + N64 header)
+- **APS GBA validate:** ~3.8ns (magic + size check)
+
+### Metadata Extraction (constant time)
+
+- **BPS metadata:** ~18-20ns
+- **UPS metadata:** ~10-11ns
+
+### Binary
+
+- **Size:** 1.4MB (optimized with LTO + strip + minreq)
 - **Zero runtime dependencies** (static linking)
 
 Note: BPS/UPS checksums are optional via --verify flag. Without verification, patching is fast. With --verify, all CRC32 checks are performed (patch + source + target). APS N64 includes optional ROM header verification (Cart ID, CRC).
 
 ## Project Stats
 
-- **Version:** 0.2.4
-- **Test Coverage:** 94 tests (17 IPS + 17 BPS + 17 UPS + 17 APS + 7 RA + others)
-- **Code Quality:** All files under 200 lines
-- **Build Time:** ~5s (release with LTO)
+- **Version:** 0.2.8-patch.8
+- **Test Coverage:** 141 tests (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 7 RA + 12 others)
+- **Code Quality:** All files under 100 lines (modular structure)
+- **Build Time:** ~4s (release with LTO)
 - **Binary Size:** 1.4MB (with RetroAchievements, optimized with minreq + manual JSON parser)
