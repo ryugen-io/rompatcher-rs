@@ -15,6 +15,13 @@ pub fn apply(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
     // Parse header
     let (_input_size, output_size, mut offset) = parse_header(patch)?;
 
+    // Validate patch has footer
+    if patch.len() < FOOTER_SIZE {
+        return Err(PatchError::InvalidFormat(
+            "Patch too small for footer".to_string(),
+        ));
+    }
+
     // Resize ROM to output size
     rom.resize(output_size as usize, 0);
 
