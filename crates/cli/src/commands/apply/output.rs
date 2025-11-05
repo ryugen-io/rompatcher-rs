@@ -18,11 +18,7 @@ pub fn write_patched_rom(
     fs::rename(&temp_path, output_path).context("Failed to finalize output file")?;
 
     println!("Successfully patched: {}", output_path.display());
-    println!(
-        "ROM size: {} → {} bytes",
-        original_size,
-        patched_rom.len()
-    );
+    println!("ROM size: {} → {} bytes", original_size, patched_rom.len());
 
     // Always show output checksum
     #[cfg(feature = "validation")]

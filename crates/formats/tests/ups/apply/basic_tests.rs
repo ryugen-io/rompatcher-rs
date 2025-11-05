@@ -6,7 +6,9 @@ use rom_patcher_formats::ups::UpsPatcher;
 #[test]
 fn test_can_handle() {
     assert!(UpsPatcher::can_handle(b"UPS1"));
-    assert!(UpsPatcher::can_handle(b"UPS1\x00\x00\x00\x00\x00\x00\x00\x00\x00"));
+    assert!(UpsPatcher::can_handle(
+        b"UPS1\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+    ));
     assert!(!UpsPatcher::can_handle(b"PATCH"));
     assert!(!UpsPatcher::can_handle(b"UPS"));
     assert!(!UpsPatcher::can_handle(b""));
