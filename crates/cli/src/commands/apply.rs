@@ -13,7 +13,13 @@ use std::path::{Path, PathBuf};
 /// - Validates input != output paths
 /// - Writes to temp file first, then atomic rename
 /// - Always shows CRC32 checksums for verification
-pub fn execute(rom_path: PathBuf, patch_path: PathBuf, output_path: Option<PathBuf>) -> Result<()> {
+/// - Optional source/target checksum verification (--verify flag)
+pub fn execute(
+    rom_path: PathBuf,
+    patch_path: PathBuf,
+    output_path: Option<PathBuf>,
+    verify: bool,
+) -> Result<()> {
     // Generate default output path if not specified
     let output_path = match output_path {
         Some(path) => path,
@@ -63,12 +69,24 @@ pub fn execute(rom_path: PathBuf, patch_path: PathBuf, output_path: Option<PathB
         patch_type.extension()
     );
 
+    // Verify source checksum if requested
+    if verify {
+        super::verify::verify_source(&original_rom, &patch_data, &patch_type)
+            .context("Source ROM checksum verification failed")?;
+    }
+
     // Clone ROM data for transactional patching (rollback on error)
     let mut patched_rom = original_rom.clone();
 
     // Apply patch with format-specific handler
     apply_patch_by_type(&mut patched_rom, &patch_data, &patch_type)
         .context("Failed to apply patch")?;
+
+    // Verify target checksum if requested
+    if verify {
+        super::verify::verify_target(&patched_rom, &patch_data, &patch_type)
+            .context("Target ROM checksum verification failed")?;
+    }
 
     // Write to temp file first, then atomic rename
     let temp_path = output_path.with_extension("tmp");
