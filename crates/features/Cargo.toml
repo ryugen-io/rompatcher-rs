@@ -11,6 +11,7 @@ description = "Extended features for ROM patching (validation, hash checking, et
 [dependencies]
 rom-patcher-core = { path = "../core" }
 thiserror.workspace = true
+crc32fast = "1.5"
 md5 = { version = "0.7", optional = true }
 ureq = { version = "2.10", optional = true, features = ["json"] }
 serde = { version = "1.0", optional = true, features = ["derive"] }
