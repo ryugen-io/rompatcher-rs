@@ -25,6 +25,7 @@ pub fn detect_console(path: &Path) -> Option<Console> {
         "gg" => Some(Console::GameGear),
         "bin" | "cue" => Some(Console::Psx),
         "iso" => Some(Console::Ps2),
+        "cso" | "pbp" => Some(Console::Psp),
         _ => None,
     }
 }
