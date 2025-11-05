@@ -13,11 +13,9 @@ rom-patcher-core = { path = "../core" }
 thiserror.workspace = true
 crc32fast = "1.5"
 md5 = { version = "0.7", optional = true }
-ureq = { version = "2.10", optional = true, features = ["json"] }
-serde = { version = "1.0", optional = true, features = ["derive"] }
-serde_json = { version = "1.0", optional = true }
+minreq = { version = "2.12", optional = true, features = ["https-rustls"] }
 
 [features]
 default = ["validation"]
 validation = ["md5"]
-retroachievements = ["md5", "ureq", "serde", "serde_json"]
+retroachievements = ["md5", "minreq"]
