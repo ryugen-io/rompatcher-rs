@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.2.8-patch.2] - 2025-11-05
+
+### Changed
+- Modularized UPS apply tests into separate modules
+  - basic_tests.rs, xor_tests.rs, resize_tests.rs, error_tests.rs
+  - Reduced ups/apply_tests.rs from 193 to 4 focused modules
+  - All 26 tests passing
+
 ## [0.2.8-patch.1] - 2025-11-05
 
 ### Changed
