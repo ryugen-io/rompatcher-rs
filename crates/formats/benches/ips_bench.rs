@@ -27,6 +27,7 @@ fn generate_test_patch(rom_size: usize, patch_count: usize) -> Vec<u8> {
 
 fn bench_ips_apply(c: &mut Criterion) {
     let mut group = c.benchmark_group("ips_apply");
+    group.measurement_time(std::time::Duration::from_secs(15)); // Ensure no warnings for large files
 
     // Test from 1KB up to 16MB (IPS maximum due to 24-bit addressing)
     for size in [
