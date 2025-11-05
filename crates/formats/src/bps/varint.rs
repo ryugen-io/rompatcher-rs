@@ -23,6 +23,7 @@ use rom_patcher_core::{PatchError, Result};
 ///   return data;
 /// }
 /// ```
+#[inline]
 pub fn decode(data: &[u8]) -> Result<(u64, usize)> {
     let mut result: u64 = 0;
     let mut shift: u64 = 1;
