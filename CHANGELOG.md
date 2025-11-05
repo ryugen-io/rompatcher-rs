@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 - APS format implementation for N64 and GBA
+- RUP (Rupture) format implementation
+- PPF (PlayStation Patch Format) implementation
+- xdelta format implementation
+- SHA-1, SHA-256 hash algorithms
+- Additional CLI commands (info, validate)
 
 ## [0.2.1] - 2025-11-05
 
@@ -25,11 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - UPS benchmark configuration in Cargo.toml
 - UPS checksum_validation_tests.rs (20 total tests, parity with IPS/BPS)
-- RUP (Rupture) format implementation
-- PPF (PlayStation Patch Format) implementation
-- xdelta format implementation
-- SHA-1, SHA-256 hash algorithms
-- Additional CLI commands (info, validate)
 
 ## [0.2.0] - 2025-11-05
 
