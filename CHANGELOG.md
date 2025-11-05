@@ -8,12 +8,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- APS GBA format implementation
 - RUP (Rupture) format implementation
 - PPF (PlayStation Patch Format) implementation
 - xdelta format implementation
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
+
+## [0.2.7] - 2025-11-05
+
+### Fixed
+- UPS apply implementation now validates patch footer size before subtraction
+  - Prevents overflow panic when patch is truncated/incomplete
+  - Returns proper error for patches smaller than footer size
+
+### Changed
+- Achieved test parity across all formats:
+  - BPS: 24 tests (8 apply, 6 validate, 3 metadata, 4 checksum, 4 verify)
+  - UPS: 25 tests (8 apply, 6 validate, 3 metadata, 4 checksum, 4 verify)
+  - APS N64: 24 tests (8 apply, 6 validate, 3 metadata, 4 checksum, 4 verify)
+  - APS GBA: 24 tests (8 apply, 6 validate, 3 metadata, 4 checksum, 4 verify)
+  - IPS: 20 tests (8 apply, 6 validate, 3 metadata, 3 checksum, no verify support)
+- Added verify tests for UPS, APS N64, APS GBA formats
+- Added missing apply tests: can_handle, invalid_patch, truncated_patch
+- Added missing validate tests: corrupted_crc, with_records, truncated_record
+
+## [0.2.6] - 2025-11-05
+
+### Fixed
+- APS format now properly integrated into CLI dispatcher
+  - Added ApsPatcher to dispatch.rs (apply command)
+  - Added ApsPatcher to verify.rs (validate and verify commands)
+  - Both APS N64 and APS GBA now work via CLI
+- Verified with real patches:
+  - APS N64: Zelda OoT Spanish (output CRC32: 0x7866f1ca ✓)
+  - APS GBA: FFTA X (output CRC32: 0x49a5539a ✓)
+  - Both recognized by RetroAchievements
+
+## [0.2.5] - 2025-11-05
+
+### Added
+- APS GBA format implementation
+  - Full support for Game Boy Advance ROM patches
+  - XOR-based patching with 64KB blocks
+  - CRC16 verification per block (source and target)
+  - Modular structure under aps/gba/ directory
+  - 17 integration tests matching IPS/BPS/UPS/APS N64 parity
+  - All modules under 200 lines
+  - Added `crc16` dependency (0.4, +5KB binary)
+
+### Changed
+- APS dispatcher now handles both N64 and GBA variants automatically
 
 ## [0.2.4] - 2025-11-05
 
