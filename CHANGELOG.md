@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.2.2] - 2025-11-05
+
+### Fixed
+- RetroAchievements now enabled by default (was incorrectly opt-in)
+  - Every patched ROM now automatically gets RA hash lookup
+  - Rate limiting (500ms) prevents API spam
+  - Binary size: 2.0MB (includes ureq HTTP client + serde_json)
+
 ## [0.2.1] - 2025-11-05
 
 ### Changed

@@ -2,7 +2,7 @@
 
 A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 
-**Current Status:** v0.2.0 | 77 Tests | Binary: 588KB (stripped)
+**Current Status:** v0.2.2 | 77 Tests | Binary: 2.0MB (with RA)
 
 ## Supported Formats
 
@@ -151,7 +151,8 @@ Note: BPS checksums are optional via --verify flag. Without verification, BPS is
 
 ## Project Stats
 
-- **Version:** 0.2.0
+- **Version:** 0.2.2
 - **Test Coverage:** 77 tests (17 IPS + 17 BPS + 17 UPS + 7 RA + others)
 - **Code Quality:** All files under 200 lines
-- **Build Time:** ~4s (release with LTO)
+- **Build Time:** ~5s (release with LTO)
+- **Binary Size:** 2.0MB (with RetroAchievements enabled by default)
