@@ -8,13 +8,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- UPS (Universal Patching System) format implementation
 - APS format implementation for N64 and GBA
 - RUP (Rupture) format implementation
 - PPF (PlayStation Patch Format) implementation
 - xdelta format implementation
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
+
+## [0.2.0] - 2025-11-05
+
+### Added
+- UPS (Universal Patching System) format implementation
+  - Variable-Length Value (VLV) encoding for sizes and offsets
+  - XOR-based patching algorithm
+  - CRC32 validation for patch, input ROM, and output ROM
+  - Support for ROM resizing during patch application
+  - Metadata extraction (input size, output size, checksums)
+  - Full --verify flag support for optional checksum validation
+- Modular CLI architecture for scalability
+  - New dispatch.rs module for format routing (33 lines)
+  - New paths.rs utility module for output path generation (30 lines)
+  - Reduced apply.rs from 175 to 120 lines
+
+### Technical
+- UPS module structure: constants, varint, helpers, patcher
+- All UPS files under 200 lines (decode-only, no patch creation)
+- 17 UPS integration tests (parity with IPS/BPS)
+- Tested with real 32MB ROM and 1.5MB UPS patch
+- Architecture now supports adding future formats without bloating core files
 
 ## [0.1.9] - 2025-11-05
 
