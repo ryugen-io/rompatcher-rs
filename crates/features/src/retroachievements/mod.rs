@@ -7,6 +7,9 @@ mod types;
 #[cfg(feature = "retroachievements")]
 mod api;
 
+#[cfg(feature = "retroachievements")]
+pub mod parser;
+
 pub use types::{Console, RaHashChecker};
 
 #[cfg(feature = "retroachievements")]
