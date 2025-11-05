@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.2.8-patch.7] - 2025-11-05
+
+### Changed
+- Modularized APS N64 apply tests into separate modules
+  - Split apply_tests.rs (107 lines) into 5 modules: helpers.rs, basic_tests.rs, rle_tests.rs, resize_tests.rs, error_tests.rs
+  - All 24 tests passing
+
 ## [0.2.8-patch.6] - 2025-11-05
 
 ### Changed
