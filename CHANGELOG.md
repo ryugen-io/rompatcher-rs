@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- BPS (Beat Patching System) format implementation
 - UPS (Universal Patching System) format implementation
 - APS format implementation for N64 and GBA
 - RUP (Rupture) format implementation
@@ -17,6 +16,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Patch creation functionality (create patches from ROM pairs)
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (create, info, validate)
+
+## [0.1.6] - 2025-11-05
+
+### Added
+- BPS (Beat Patching System) format support
+  - Variable-length integer encoding/decoding with overflow protection
+  - CRC32 validation for source, target, and patch integrity
+  - Four action types: SourceRead, TargetRead, SourceCopy, TargetCopy
+  - Metadata extraction with UTF-8 parsing
+  - Handles RLE-style overlapping copies (TargetCopy)
+- BPS module structure with subdirectories for better organization
+  - apply/ subdirectory with action handlers (171 lines vs 210 previously)
+  - helpers.rs for shared CRC32 and parsing functions
+
+### Changed
+- Migrated from custom CRC32 implementation to crc32fast crate (SIMD-optimized)
+  - Removed 72 lines of custom CRC32 lookup table code
+  - Consistent CRC32 usage across all formats (BPS, validation features)
+  - Better performance through hardware acceleration on supported CPUs
+- Connected MD5 algorithm to validator (was implemented but unused)
+
+### Refactored
+- IPS apply.rs split into subdirectory structure
+  - apply/mod.rs (125 lines) - Main logic, validation, EOF handling
+  - apply/records.rs (92 lines) - RLE and normal record handlers
+  - Reduced from 212 monolithic lines to organized modules
+  - No files exceed 200 lines limit
+  - Consistent structure with BPS module
+
+### Technical
+- 9 BPS tests added (varint, validation, metadata extraction)
+- Total code: 2784 lines
+- All 36 tests passing (+ 1 ignored doctest)
+- No files over 200 lines
 
 ## [0.1.5] - 2025-11-05
 
