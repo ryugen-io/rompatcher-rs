@@ -60,12 +60,15 @@ fn write_varint(buf: &mut Vec<u8>, mut data: u64) {
 fn bench_bps_apply(c: &mut Criterion) {
     let mut group = c.benchmark_group("bps_apply");
 
-    // Test various ROM sizes
+    // Test various ROM sizes (BPS has no size limit like IPS's 16MB)
     for size in [
-        1024,           // 1KB
-        10 * 1024,      // 10KB
-        100 * 1024,     // 100KB
-        1024 * 1024,    // 1MB
+        1024,               // 1KB
+        10 * 1024,          // 10KB
+        100 * 1024,         // 100KB
+        1024 * 1024,        // 1MB
+        4 * 1024 * 1024,    // 4MB
+        8 * 1024 * 1024,    // 8MB
+        16 * 1024 * 1024,   // 16MB (IPS max, but BPS can go beyond)
     ].iter() {
         let patch = generate_test_patch(*size, 10);
         let original = vec![0u8; *size];
@@ -86,10 +89,13 @@ fn bench_bps_validate(c: &mut Criterion) {
     let mut group = c.benchmark_group("bps_validate");
 
     for size in [
-        1024,           // 1KB
-        10 * 1024,      // 10KB
-        100 * 1024,     // 100KB
-        1024 * 1024,    // 1MB
+        1024,               // 1KB
+        10 * 1024,          // 10KB
+        100 * 1024,         // 100KB
+        1024 * 1024,        // 1MB
+        4 * 1024 * 1024,    // 4MB
+        8 * 1024 * 1024,    // 8MB
+        16 * 1024 * 1024,   // 16MB
     ].iter() {
         let patch = generate_test_patch(*size, 10);
 
@@ -107,10 +113,13 @@ fn bench_bps_metadata(c: &mut Criterion) {
     let mut group = c.benchmark_group("bps_metadata");
 
     for size in [
-        1024,           // 1KB
-        10 * 1024,      // 10KB
-        100 * 1024,     // 100KB
-        1024 * 1024,    // 1MB
+        1024,               // 1KB
+        10 * 1024,          // 10KB
+        100 * 1024,         // 100KB
+        1024 * 1024,        // 1MB
+        4 * 1024 * 1024,    // 4MB
+        8 * 1024 * 1024,    // 8MB
+        16 * 1024 * 1024,   // 16MB
     ].iter() {
         let patch = generate_test_patch(*size, 10);
 
