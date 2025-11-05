@@ -63,3 +63,19 @@ fn test_validate_with_actions() {
 
     assert!(BpsPatcher::validate(&patch).is_ok());
 }
+
+#[test]
+fn test_validate_corrupted_patch_crc() {
+    let mut patch = Vec::new();
+    patch.extend_from_slice(b"BPS1");
+    patch.push(0x85); // source_size = 5
+    patch.push(0x83); // target_size = 3
+    patch.push(0x80); // metadata_size = 0
+    patch.push(0x88); // SOURCE_READ length=3
+    patch.extend_from_slice(&[0x00, 0x00, 0x00, 0x00]); // source CRC32
+    patch.extend_from_slice(&[0x00, 0x00, 0x00, 0x00]); // target CRC32
+    // Wrong patch CRC - not calculated from patch data
+    patch.extend_from_slice(&[0xFF, 0xFF, 0xFF, 0xFF]);
+
+    assert!(BpsPatcher::validate(&patch).is_err());
+}
