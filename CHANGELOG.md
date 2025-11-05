@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (create, info, validate)
 
+## [0.1.8-patch.2] - 2025-11-05
+
+### Fixed
+- Added PSP console detection support (was in enum but missing from detect_console)
+  - Supports .cso and .pbp file extensions
+  - Added tests for PSP detection
+
 ## [0.1.8-patch.1] - 2025-11-05
 
 ### Changed
