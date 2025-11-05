@@ -14,6 +14,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.2.9] - 2025-11-05
+
+### Fixed
+- Fixed --verify target checksum validation bug
+  - verify_target() now correctly passes source ROM + target ROM to verify functions
+  - Previously only passed target ROM causing incorrect CRC32 comparison
+  - Affected BPS, UPS, and APS formats with --verify flag
+  - All 141 tests passing
+
+### Added
+- Added test.rom.z64 for APS N64 integration testing
+- Added test.rom.gba + patch.aps for APS GBA integration testing
+- All patch formats now have complete test coverage with real ROM files
+
 ## [0.2.8-patch.8] - 2025-11-05
 
 ### Changed
