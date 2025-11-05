@@ -13,9 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RUP (Rupture) format implementation
 - PPF (PlayStation Patch Format) implementation
 - xdelta format implementation
-- Patch creation functionality (create patches from ROM pairs)
 - SHA-1, SHA-256 hash algorithms
-- Additional CLI commands (create, info, validate)
+- Additional CLI commands (info, validate)
 
 ## [0.1.8-patch.4] - 2025-11-05
 

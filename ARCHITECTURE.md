@@ -68,7 +68,7 @@ formats/src/ips/
 └── constants.rs (13 lines) # HEADER, EOF_MARKER, MAX_ROM_SIZE
 
 Each module has single responsibility - no monolithic files.
-Purpose: APPLY patches only (no creation functionality)
+Purpose: APPLY patches only
 Largest individual file: apply.rs (127 lines)
 ```
 
@@ -148,7 +148,6 @@ formats/src/ips/
 ├── mod.rs           # Public API + trait impl (minimal)
 ├── constants.rs     # Format constants only
 ├── apply.rs         # Patch application logic
-├── create.rs        # Patch creation logic
 ├── metadata.rs      # Metadata extraction
 ├── validate.rs      # Validation logic
 └── io.rs            # Low-level I/O helpers
@@ -253,7 +252,6 @@ formats/src/{format_name}/
 ├── mod.rs          # Public API, trait implementation
 ├── constants.rs    # Format-specific constants
 ├── apply.rs        # Patch application
-├── create.rs       # Patch creation
 ├── metadata.rs     # Metadata extraction
 ├── validate.rs     # Validation
 └── io.rs          # I/O utilities (if needed)
