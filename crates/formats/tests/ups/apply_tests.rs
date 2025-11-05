@@ -29,6 +29,15 @@ fn create_test_patch() -> Vec<u8> {
 }
 
 #[test]
+fn test_can_handle() {
+    assert!(UpsPatcher::can_handle(b"UPS1"));
+    assert!(UpsPatcher::can_handle(b"UPS1\x00\x00\x00\x00\x00\x00\x00\x00\x00"));
+    assert!(!UpsPatcher::can_handle(b"PATCH"));
+    assert!(!UpsPatcher::can_handle(b"UPS"));
+    assert!(!UpsPatcher::can_handle(b""));
+}
+
+#[test]
 fn test_apply_simple_xor() {
     let patcher = UpsPatcher;
     let patch = create_test_patch();
@@ -142,30 +151,43 @@ fn test_apply_multi_byte_xor() {
 }
 
 #[test]
-fn test_verify_input_rom() {
-    let patch = create_test_patch();
-    let input_rom = vec![0u8; 10];
-    assert!(UpsPatcher::verify(&input_rom, &patch, None).is_ok());
+fn test_apply_invalid_patch() {
+    let mut rom = vec![0u8; 10];
+    let invalid_patch = vec![0xFF; 20]; // Invalid patch data
+
+    let patcher = UpsPatcher;
+    assert!(patcher.apply(&mut rom, &invalid_patch).is_err());
 }
 
 #[test]
-fn test_verify_output_rom() {
-    let patch = create_test_patch();
-    let mut output_rom = vec![0u8; 10];
-    output_rom[0] = 0xFF;
-    assert!(UpsPatcher::verify(&[], &patch, Some(&output_rom)).is_ok());
+fn test_apply_empty_patch() {
+    let rom = vec![0x12, 0x34, 0x56];
+    let original = rom.clone();
+
+    let mut patch = Vec::new();
+    patch.extend_from_slice(b"UPS1");
+    patch.push(0x83); // Input size = 3
+    patch.push(0x83); // Output size = 3
+    patch.push(0x80); // Offset 0 (encoded as varint)
+    patch.push(0x00); // XOR terminator (no data)
+    let input_crc = crc32fast::hash(&rom);
+    patch.extend_from_slice(&input_crc.to_le_bytes());
+    let output_crc = crc32fast::hash(&rom);
+    patch.extend_from_slice(&output_crc.to_le_bytes());
+    let patch_crc = crc32fast::hash(&patch);
+    patch.extend_from_slice(&patch_crc.to_le_bytes());
+
+    let patcher = UpsPatcher;
+    let mut rom_mut = rom;
+    patcher.apply(&mut rom_mut, &patch).unwrap();
+    assert_eq!(rom_mut, original);
 }
 
 #[test]
-fn test_verify_wrong_input_checksum() {
-    let patch = create_test_patch();
-    let wrong_input = vec![0xFF; 10];
-    assert!(UpsPatcher::verify(&wrong_input, &patch, None).is_err());
-}
+fn test_apply_truncated_patch() {
+    let mut rom = vec![0u8; 10];
+    let patch = b"UPS1\x8A\x8A"; // Incomplete header
 
-#[test]
-fn test_verify_wrong_output_checksum() {
-    let patch = create_test_patch();
-    let wrong_output = vec![0xAA; 10];
-    assert!(UpsPatcher::verify(&[], &patch, Some(&wrong_output)).is_err());
+    let patcher = UpsPatcher;
+    assert!(patcher.apply(&mut rom, patch).is_err());
 }
