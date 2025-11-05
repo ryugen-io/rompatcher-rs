@@ -50,8 +50,15 @@ pub fn execute(
 
     // Verify source checksum if requested
     if verify {
-        super::verify::verify_source(&original_rom, &patch_data, &patch_type)
-            .context("Source ROM checksum verification failed")?;
+        // IPS format has no embedded checksums - skip verification
+        if patch_type.name() == "International Patching System" {
+            println!(
+                "Note: IPS format does not support checksum verification (no embedded checksums)"
+            );
+        } else {
+            super::verify::verify_source(&original_rom, &patch_data, &patch_type)
+                .context("Source ROM checksum verification failed")?;
+        }
     }
 
     // Clone ROM data for transactional patching (rollback on error)
@@ -63,8 +70,11 @@ pub fn execute(
 
     // Verify target checksum if requested
     if verify {
-        super::verify::verify_target(&original_rom, &patched_rom, &patch_data, &patch_type)
-            .context("Target ROM checksum verification failed")?;
+        // IPS format has no embedded checksums - skip verification
+        if patch_type.name() != "International Patching System" {
+            super::verify::verify_target(&original_rom, &patched_rom, &patch_data, &patch_type)
+                .context("Target ROM checksum verification failed")?;
+        }
     }
 
     // Write output with checksum display
