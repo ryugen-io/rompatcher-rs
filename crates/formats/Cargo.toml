@@ -13,6 +13,7 @@ rom-patcher-core = { path = "../core" }
 thiserror.workspace = true
 crc32fast = "1.5"
 crc16 = "0.4"
+md5 = "0.7"
 
 [dev-dependencies]
 criterion = "0.5"
@@ -53,3 +54,8 @@ required-features = ["aps"]
 name = "ebp_bench"
 harness = false
 required-features = ["ebp"]
+
+[[bench]]
+name = "rup_bench"
+harness = false
+required-features = ["rup"]
