@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.4.0] - 2025-11-06
+
+### Added
+- RUP (Rupture Patches) format support
+  - Multi-file bidirectional patching with MD5 validation
+  - Custom VLV (Variable-Length Value) encoding
+  - XOR-based record system with overflow modes (Append/Minify)
+  - Rich metadata: author, version, title, genre, language, date, web, description
+  - ROM type detection (10 types: raw, nes, fds, snes, n64, gb, sms, mega, pce, lynx)
+  - Full bidirectional support (same patch applies forward/backward)
+  - CLI integration with --verify flag support
+  - 27 comprehensive tests (validation, varint, metadata, apply, undo)
+
 ## [0.3.1-patch.2] - 2025-11-06
 
 ### Added
