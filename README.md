@@ -2,7 +2,7 @@
 
 A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 
-**Current Status:** v0.3.1 | 183 Tests | Binary: 1.4MB (with RA)
+**Current Status:** v0.4.0 | 210 Tests | Binary: 1.5MB (with RA)
 
 ## Supported Formats
 
@@ -12,14 +12,14 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 - **APS N64** (Nintendo 64 APS Format) - Production Ready (24 tests)
 - **APS GBA** (Game Boy Advance APS Format) - Production Ready (24 tests)
 - **EBP** (Extended Binary Patch) - Production Ready (26 tests) - IPS + JSON metadata
-- **RUP** (Rupture Patches) - Planned
+- **RUP** (Rupture Patches) - Production Ready (27 tests) - Multi-file bidirectional with MD5
 - **PPF** (PlayStation Patch Format) - Planned
 - **xdelta** (Generic binary diff) - Planned
 
 ## Features
 
 ### Implemented
-- **Apply patches:** IPS, BPS, UPS, APS N64, APS GBA, EBP formats with automatic detection
+- **Apply patches:** IPS, BPS, UPS, APS N64, APS GBA, EBP, RUP formats with automatic detection
 - **Validation:** Optional CRC32 verification via --verify flag (patch integrity + source/target checksums)
 - **Hashing:** CRC32 and MD5 computation
 - **RetroAchievements:** Console detection + hash verification
@@ -84,7 +84,7 @@ rompatchrs game.gba patch.ups game-patched.gba
 rompatchrs game.z64 patch.aps game-patched.z64
 ```
 
-The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP) and applies it.
+The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP, RUP) and applies it.
 
 ### EBP patches (IPS + JSON metadata)
 ```bash
@@ -160,6 +160,7 @@ Benchmarked on various ROM sizes (v0.2.9):
 | **UPS** | 67ns | 1.4µs | 16µs | 73.7µs | 292µs |
 | **APS N64** | 139ns | 3.5µs | 572µs | 2.4ms | 9.7ms |
 | **APS GBA** | 1.8µs | 57µs | 96µs | 227µs | 10ms |
+| **RUP** | 3.5µs | 298µs | 3.1ms | 12.3ms | 49ms |
 
 ### Validation Performance (constant time)
 
@@ -168,11 +169,13 @@ Benchmarked on various ROM sizes (v0.2.9):
 - **UPS validate:** ~18-29ns (magic + size check)
 - **APS N64 validate:** ~63ns (magic + N64 header)
 - **APS GBA validate:** ~3.8ns (magic + size check)
+- **RUP validate:** ~2.08ns (magic check)
 
 ### Metadata Extraction (constant time)
 
 - **BPS metadata:** ~18-20ns
 - **UPS metadata:** ~10-11ns
+- **RUP metadata:** ~287ns (with JSON parsing)
 
 ### Binary
 
