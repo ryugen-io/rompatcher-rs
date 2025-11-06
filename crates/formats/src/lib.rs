@@ -5,6 +5,7 @@
 //! - BPS (Beat Patching System)
 //! - UPS (Universal Patching System)
 //! - APS (Nintendo 64 APS Format)
+//! - EBP (Extended Binary Patch)
 //! - RUP (Rupture Patches)
 //! - PPF (PlayStation Patch Format)
 //! - xdelta (Generic binary diff)
@@ -22,6 +23,9 @@ pub mod ups;
 
 #[cfg(feature = "aps")]
 pub mod aps;
+
+#[cfg(feature = "ebp")]
+pub mod ebp;
 
 #[cfg(feature = "rup")]
 pub mod rup;
@@ -52,6 +56,11 @@ pub fn detect_format(data: &[u8]) -> Option<PatchType> {
     #[cfg(feature = "aps")]
     if aps::ApsPatcher::can_handle(data) {
         return Some(PatchType::Aps);
+    }
+
+    #[cfg(feature = "ebp")]
+    if ebp::EbpPatcher::can_handle(data) {
+        return Some(PatchType::Ebp);
     }
 
     #[cfg(feature = "rup")]
