@@ -1,30 +1,15 @@
 //! EBP validation
 
 use super::constants::*;
-use rom_patcher_core::{PatchError, Result};
+use rom_patcher_core::Result;
 
 /// Validate EBP patch format
+/// EBP is IPS-compatible, so we delegate to IPS validation
 pub fn validate(patch: &[u8]) -> Result<()> {
-    // Check minimum size (magic + EOF)
-    if patch.len() < MAGIC_SIZE + EOF_MARKER.len() {
-        return Err(PatchError::InvalidFormat("EBP patch too small".to_string()));
-    }
-
-    // Check magic (same as IPS)
-    if &patch[..MAGIC_SIZE] != MAGIC {
-        return Err(PatchError::InvalidFormat(format!(
-            "Invalid EBP magic: expected {:?}, got {:?}",
-            MAGIC,
-            &patch[..MAGIC_SIZE]
-        )));
-    }
-
-    // Check for EOF marker
-    if !patch.windows(EOF_MARKER.len()).any(|w| w == EOF_MARKER) {
-        return Err(PatchError::InvalidFormat("Missing EOF marker".to_string()));
-    }
-
-    Ok(())
+    // EBP uses same validation as IPS (magic + EOF + records)
+    use crate::ips::IpsPatcher;
+    use rom_patcher_core::PatchFormat;
+    IpsPatcher::validate(patch)
 }
 
 /// Check if patch can be handled
