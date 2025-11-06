@@ -10,7 +10,7 @@ pub mod validate;
 
 pub mod apply;
 
-use rom_patcher_core::{PatchError, PatchFormat, PatchMetadata, PatchType, Result};
+use rom_patcher_core::{PatchError, PatchFormat, PatchMetadata, Result};
 
 /// EBP patch format handler
 pub struct EbpPatcher;
@@ -30,8 +30,12 @@ impl PatchFormat for EbpPatcher {
     }
 
     fn metadata(patch: &[u8]) -> Result<PatchMetadata> {
+        // EBP is IPS-compatible, so first get IPS metadata (target_size)
+        use crate::ips::IpsPatcher;
+        let mut meta = IpsPatcher::metadata(patch)?;
+
+        // Then add EBP-specific JSON metadata
         let ebp_meta = metadata::EbpMetadata::from_patch(patch);
-        let mut meta = PatchMetadata::new(PatchType::Ebp);
 
         if let Some(title) = ebp_meta.title {
             meta = meta.with_extra("title".to_string(), title);

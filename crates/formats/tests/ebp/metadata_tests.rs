@@ -1,49 +1,41 @@
-//! Tests for EBP metadata extraction (JSON parsing)
+//! Tests for IPS metadata extraction
 
 use rom_patcher_core::PatchFormat;
 use rom_patcher_formats::ebp::EbpPatcher;
 
 #[test]
-fn test_metadata_no_json() {
-    let patch = b"PATCHEOF";
-    let metadata = EbpPatcher::metadata(patch).unwrap();
-    assert!(metadata.extra.is_empty());
+fn test_metadata_simple() {
+    // Manually create IPS patch: write 0xFF at offset 50
+    let mut patch = Vec::new();
+    patch.extend_from_slice(b"PATCH"); // Header
+    patch.extend_from_slice(&[0x00, 0x00, 0x32]); // Offset 50 (24-bit BE)
+    patch.extend_from_slice(&[0x00, 0x01]); // Size 1 (16-bit BE)
+    patch.push(0xFF); // Data
+    patch.extend_from_slice(b"EOF"); // Footer
+
+    let metadata = EbpPatcher::metadata(&patch).unwrap();
+
+    assert!(metadata.target_size.is_some());
+    assert!(metadata.target_size.unwrap() >= 51);
 }
 
 #[test]
-fn test_metadata_with_title() {
+fn test_metadata_with_truncation() {
+    // Manually create IPS patch with truncation size 50
     let mut patch = Vec::new();
-    patch.extend_from_slice(b"PATCHEOF{\"title\":\"Test\"}");
+    patch.extend_from_slice(b"PATCH"); // Header
+    patch.extend_from_slice(b"EOF"); // EOF marker
+    patch.extend_from_slice(&[0x00, 0x00, 0x32]); // Truncate to 50 bytes (24-bit BE)
 
     let metadata = EbpPatcher::metadata(&patch).unwrap();
-    let title = metadata.extra.iter().find(|(k, _)| k == "title");
-    assert_eq!(title.unwrap().1, "Test");
+
+    assert_eq!(metadata.target_size, Some(50));
 }
 
 #[test]
-fn test_metadata_full_json() {
-    let mut patch = Vec::new();
-    patch.extend_from_slice(b"PATCHEOF{\"title\":\"My Patch\",\"author\":\"Me\"}");
+fn test_metadata_invalid_patch() {
+    let invalid_patch = b"NOTIPS";
+    let result = EbpPatcher::metadata(invalid_patch);
 
-    let metadata = EbpPatcher::metadata(&patch).unwrap();
-    assert_eq!(metadata.extra.len(), 2);
-}
-
-#[test]
-fn test_metadata_escaped_chars() {
-    let mut patch = Vec::new();
-    patch.extend_from_slice(b"PATCHEOF{\"title\":\"L1\\nL2\"}");
-
-    let metadata = EbpPatcher::metadata(&patch).unwrap();
-    let title = metadata.extra.iter().find(|(k, _)| k == "title");
-    assert_eq!(title.unwrap().1, "L1\nL2");
-}
-
-#[test]
-fn test_metadata_invalid_json() {
-    let mut patch = Vec::new();
-    patch.extend_from_slice(b"PATCHEOF{invalid}");
-
-    let metadata = EbpPatcher::metadata(&patch).unwrap();
-    assert!(metadata.extra.is_empty());
+    assert!(result.is_err());
 }

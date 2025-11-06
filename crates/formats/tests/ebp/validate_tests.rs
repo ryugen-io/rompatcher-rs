@@ -1,4 +1,4 @@
-//! Tests for EBP patch validation
+//! Tests for IPS patch validation
 
 use rom_patcher_core::PatchFormat;
 use rom_patcher_formats::ebp::EbpPatcher;
@@ -11,19 +11,20 @@ fn test_validate_valid_patch() {
 
 #[test]
 fn test_validate_with_records() {
+    // Manually create IPS patch with one record
     let mut patch = Vec::new();
-    patch.extend_from_slice(b"PATCH");
-    patch.extend_from_slice(&[0x00, 0x00, 0x32]);
-    patch.extend_from_slice(&[0x00, 0x01]);
-    patch.push(0xFF);
-    patch.extend_from_slice(b"EOF");
+    patch.extend_from_slice(b"PATCH"); // Header
+    patch.extend_from_slice(&[0x00, 0x00, 0x32]); // Offset 50
+    patch.extend_from_slice(&[0x00, 0x01]); // Size 1
+    patch.push(0xFF); // Data
+    patch.extend_from_slice(b"EOF"); // Footer
 
     assert!(EbpPatcher::validate(&patch).is_ok());
 }
 
 #[test]
 fn test_validate_invalid_magic() {
-    let patch = b"NOTEBPEOF";
+    let patch = b"NOTIPSEOF";
     assert!(EbpPatcher::validate(patch).is_err());
 }
 
@@ -36,5 +37,12 @@ fn test_validate_missing_eof() {
 #[test]
 fn test_validate_truncated() {
     let patch = b"PATCH\x00\x00";
+    assert!(EbpPatcher::validate(patch).is_err());
+}
+
+#[test]
+fn test_validate_incomplete_record() {
+    // Missing data bytes
+    let patch = b"PATCH\x00\x00\x05\x00\x03EOF";
     assert!(EbpPatcher::validate(patch).is_err());
 }

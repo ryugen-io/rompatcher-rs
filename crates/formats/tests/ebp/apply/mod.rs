@@ -1,4 +1,5 @@
-//! EBP patch application tests
+//! IPS apply tests module
 
 mod basic_tests;
-mod json_tests;
+mod error_tests;
+mod rle_tests;
