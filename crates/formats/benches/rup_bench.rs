@@ -112,7 +112,7 @@ fn bench_rup_metadata(c: &mut Criterion) {
     let mut group = c.benchmark_group("rup_metadata");
 
     // Test from 1KB up to 16MB
-    // Metadata extraction includes JSON parsing overhead
+    // Metadata extraction is constant-time (only reads fixed header)
     for size in [
         1024,             // 1KB
         10 * 1024,        // 10KB
