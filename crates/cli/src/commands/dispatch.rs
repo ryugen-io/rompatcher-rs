@@ -2,7 +2,10 @@
 
 use anyhow::Result;
 use rom_patcher_core::{PatchFormat, PatchType};
-use rom_patcher_formats::{aps::ApsPatcher, bps::BpsPatcher, ips::IpsPatcher, ups::UpsPatcher};
+use rom_patcher_formats::{
+    aps::ApsPatcher, bps::BpsPatcher, ebp::EbpPatcher, ips::IpsPatcher, rup::RupPatcher,
+    ups::UpsPatcher,
+};
 
 /// Apply patch based on detected format
 pub fn apply_patch(rom: &mut Vec<u8>, patch: &[u8], patch_type: &PatchType) -> Result<()> {
@@ -21,6 +24,14 @@ pub fn apply_patch(rom: &mut Vec<u8>, patch: &[u8], patch_type: &PatchType) -> R
         }
         PatchType::Aps => {
             let patcher = ApsPatcher;
+            patcher.apply(rom, patch)?;
+        }
+        PatchType::Ebp => {
+            let patcher = EbpPatcher;
+            patcher.apply(rom, patch)?;
+        }
+        PatchType::Rup => {
+            let patcher = RupPatcher;
             patcher.apply(rom, patch)?;
         }
         _ => {
