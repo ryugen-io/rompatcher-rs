@@ -38,6 +38,12 @@ pub mod xdelta;
 
 /// Auto-detect patch format from file data
 pub fn detect_format(data: &[u8]) -> Option<PatchType> {
+    // EBP must be checked before IPS (both use PATCH magic)
+    #[cfg(feature = "ebp")]
+    if ebp::EbpPatcher::can_handle(data) {
+        return Some(PatchType::Ebp);
+    }
+
     #[cfg(feature = "ips")]
     if ips::IpsPatcher::can_handle(data) {
         return Some(PatchType::Ips);
@@ -56,11 +62,6 @@ pub fn detect_format(data: &[u8]) -> Option<PatchType> {
     #[cfg(feature = "aps")]
     if aps::ApsPatcher::can_handle(data) {
         return Some(PatchType::Aps);
-    }
-
-    #[cfg(feature = "ebp")]
-    if ebp::EbpPatcher::can_handle(data) {
-        return Some(PatchType::Ebp);
     }
 
     #[cfg(feature = "rup")]
