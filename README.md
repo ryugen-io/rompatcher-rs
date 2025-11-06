@@ -184,7 +184,10 @@ Note: BPS/UPS checksums are optional via --verify flag. Without verification, pa
 ## Project Stats
 
 - **Version:** 0.3.1
-- **Test Coverage:** 183 tests (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 26 EBP + 7 RA CLI + 14 format helpers + 6 validation + 4 RA features + 4 ROM utils)
+- **Test Coverage:** 183 tests
+  - Format tests: 148 (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 26 EBP)
+  - Integration tests: 14 format helpers + 6 validation + 4 ROM utils
+  - RetroAchievements: 11 (7 CLI + 4 features)
 - **Code Quality:** All files under 100 lines (modular structure)
 - **Build Time:** ~4s (release with LTO)
 - **Binary Size:** 1.4MB (with RetroAchievements, optimized with minreq + manual JSON parser)
