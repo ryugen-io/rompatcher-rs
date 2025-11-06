@@ -14,6 +14,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.2.9-patch.1] - 2025-11-05
+
+### Changed
+- Modularized BPS apply actions into focused modules
+  - Split actions.rs (117 lines) into separate files
+  - context.rs: ActionContext struct
+  - source_read.rs: SOURCE_READ handler
+  - target_read.rs: TARGET_READ handler
+  - source_copy.rs: SOURCE_COPY handler
+  - target_copy.rs: TARGET_COPY handler
+  - All files now under 60 lines
+
 ## [0.2.9] - 2025-11-05
 
 ### Fixed
