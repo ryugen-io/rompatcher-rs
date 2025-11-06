@@ -2,7 +2,7 @@
 
 A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 
-**Current Status:** v0.2.9 | 141 Tests | Binary: 1.4MB (with RA)
+**Current Status:** v0.3.1 | 183 Tests | Binary: 1.4MB (with RA)
 
 ## Supported Formats
 
@@ -11,6 +11,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 - **UPS** (Universal Patching System) - Production Ready (26 tests)
 - **APS N64** (Nintendo 64 APS Format) - Production Ready (24 tests)
 - **APS GBA** (Game Boy Advance APS Format) - Production Ready (24 tests)
+- **EBP** (Extended Binary Patch) - Production Ready (26 tests) - IPS + JSON metadata
 - **RUP** (Rupture Patches) - Planned
 - **PPF** (PlayStation Patch Format) - Planned
 - **xdelta** (Generic binary diff) - Planned
@@ -18,7 +19,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 ## Features
 
 ### Implemented
-- **Apply patches:** IPS, BPS, UPS, APS N64, APS GBA formats with automatic detection
+- **Apply patches:** IPS, BPS, UPS, APS N64, APS GBA, EBP formats with automatic detection
 - **Validation:** Optional CRC32 verification via --verify flag (patch integrity + source/target checksums)
 - **Hashing:** CRC32 and MD5 computation
 - **RetroAchievements:** Console detection + hash verification
@@ -83,7 +84,13 @@ rompatchrs game.gba patch.ups game-patched.gba
 rompatchrs game.z64 patch.aps game-patched.z64
 ```
 
-The patcher automatically detects the patch format (IPS, BPS, UPS, APS) and applies it.
+The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP) and applies it.
+
+### EBP patches (IPS + JSON metadata)
+```bash
+# EBP is IPS-compatible with optional JSON metadata
+rompatchrs game.sfc patch.ebp game-patched.sfc
+```
 
 ## Development
 
@@ -176,8 +183,8 @@ Note: BPS/UPS checksums are optional via --verify flag. Without verification, pa
 
 ## Project Stats
 
-- **Version:** 0.2.9
-- **Test Coverage:** 141 tests (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 7 RA + 12 others)
+- **Version:** 0.3.1
+- **Test Coverage:** 183 tests (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 26 EBP + 7 RA + 28 others)
 - **Code Quality:** All files under 100 lines (modular structure)
 - **Build Time:** ~4s (release with LTO)
 - **Binary Size:** 1.4MB (with RetroAchievements, optimized with minreq + manual JSON parser)
