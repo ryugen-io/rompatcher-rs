@@ -2,7 +2,10 @@
 
 use anyhow::Result;
 use rom_patcher_core::{PatchFormat, PatchType};
-use rom_patcher_formats::{aps::ApsPatcher, bps::BpsPatcher, ips::IpsPatcher, ups::UpsPatcher};
+use rom_patcher_formats::{
+    aps::ApsPatcher, bps::BpsPatcher, ebp::EbpPatcher, ips::IpsPatcher, rup::RupPatcher,
+    ups::UpsPatcher,
+};
 
 /// Dispatch verify() calls to appropriate format
 fn dispatch_verify(
@@ -16,6 +19,8 @@ fn dispatch_verify(
         PatchType::Bps => BpsPatcher::verify(rom, patch, target)?,
         PatchType::Ups => UpsPatcher::verify(rom, patch, target)?,
         PatchType::Aps => ApsPatcher::verify(rom, patch, target)?,
+        PatchType::Ebp => EbpPatcher::verify(rom, patch, target)?,
+        PatchType::Rup => RupPatcher::verify(rom, patch, target)?,
         _ => anyhow::bail!("Format {} does not support verification", patch_type.name()),
     }
     Ok(())
@@ -28,6 +33,8 @@ fn dispatch_validate(patch: &[u8], patch_type: &PatchType) -> Result<()> {
         PatchType::Bps => BpsPatcher::validate(patch)?,
         PatchType::Ups => UpsPatcher::validate(patch)?,
         PatchType::Aps => ApsPatcher::validate(patch)?,
+        PatchType::Ebp => EbpPatcher::validate(patch)?,
+        PatchType::Rup => RupPatcher::validate(patch)?,
         _ => anyhow::bail!("Format {} does not support verification", patch_type.name()),
     }
     Ok(())
