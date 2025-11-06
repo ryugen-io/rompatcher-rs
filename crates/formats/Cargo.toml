@@ -6,7 +6,7 @@ rust-version.workspace = true
 authors.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Patch format implementations (IPS, BPS, UPS, APS, RUP, PPF, xdelta)"
+description = "Patch format implementations (IPS, BPS, UPS, APS, EBP, RUP, PPF, xdelta)"
 
 [dependencies]
 rom-patcher-core = { path = "../core" }
@@ -19,11 +19,12 @@ criterion = "0.5"
 rom-patcher-features = { path = "../features" }
 
 [features]
-default = ["ips", "bps", "ups", "aps", "rup", "ppf", "xdelta"]
+default = ["ips", "bps", "ups", "aps", "ebp", "rup", "ppf", "xdelta"]
 ips = []
 bps = []
 ups = []
 aps = []
+ebp = []
 rup = []
 ppf = []
 xdelta = []
