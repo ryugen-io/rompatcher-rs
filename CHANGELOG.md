@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
 
+## [0.4.1] - 2025-11-07
+
+### Added
+- CLI `--only` flag for operation-specific modes
+  - `--only verify`: Verify checksums without applying patch
+  - Validates patch integrity and source ROM checksum
+  - Skips patching and file writing
+  - Foundation for future modes (metadata, validate, etc.)
+
 ## [0.4.0] - 2025-11-06
 
 ### Added
