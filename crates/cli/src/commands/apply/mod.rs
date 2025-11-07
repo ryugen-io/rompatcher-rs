@@ -17,7 +17,7 @@ use std::path::PathBuf;
 /// - Optional source/target checksum verification (--verify flag)
 pub fn execute(
     rom_path: PathBuf,
-    patch_path: PathBuf,
+    patch_path: Option<PathBuf>,
     output_path: Option<PathBuf>,
     verify: bool,
     only_mode: Option<rom_patcher_cli::OnlyMode>,
@@ -39,6 +39,17 @@ pub fn execute(
             "Input and output paths cannot be the same. Use a different output path to preserve the original ROM."
         );
     }
+
+    // Handle --only ra mode (ROM-only, no patch needed)
+    if let Some(rom_patcher_cli::OnlyMode::Ra) = only_mode {
+        println!("Running RetroAchievements check (ROM-only mode)");
+        let rom = input::load_rom_with_checksum(&rom_path)?;
+        crate::utils::retroachievements::check_and_display(&rom, &rom_path);
+        return Ok(());
+    }
+
+    // For all other modes, patch is required
+    let patch_path = patch_path.expect("Patch path should be validated in main");
 
     // Load ROM and patch with checksum display
     let original_rom = input::load_rom_with_checksum(&rom_path)?;
@@ -75,6 +86,10 @@ pub fn execute(
 
                 println!("Verification completed successfully!");
                 return Ok(());
+            }
+            rom_patcher_cli::OnlyMode::Ra => {
+                // Already handled above, should not reach here
+                unreachable!("Ra mode should be handled earlier")
             }
         }
     }
