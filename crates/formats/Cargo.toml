@@ -16,7 +16,7 @@ crc16 = "0.4"
 md5 = "0.7"
 
 [dev-dependencies]
-criterion = "0.5"
+divan = "0.1"
 rom-patcher-features = { path = "../features" }
 
 [features]
