@@ -9,4 +9,6 @@ pub mod utils;
 pub enum OnlyMode {
     /// Only verify checksums without applying patch
     Verify,
+    /// Check ROM against RetroAchievements database
+    Ra,
 }
