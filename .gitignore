@@ -15,6 +15,9 @@ Cargo.lock
 .DS_Store
 Thumbs.db
 
+# MCP
+.serena/
+
 # Test files - ROMs only (patches are committed)
 test_files/**/*.smc
 test_files/**/*.nes
