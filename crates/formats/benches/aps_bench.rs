@@ -1,7 +1,11 @@
-use criterion::{BenchmarkId, Criterion, black_box, criterion_group, criterion_main};
+use divan::Bencher;
 use rom_patcher_core::PatchFormat;
 use rom_patcher_formats::aps::gba::ApsGbaPatcher;
 use rom_patcher_formats::aps::n64::ApsN64Patcher;
+
+fn main() {
+    divan::main();
+}
 
 fn generate_test_patch(rom_size: usize, patch_count: usize) -> Vec<u8> {
     let mut patch = Vec::new();
@@ -26,63 +30,37 @@ fn generate_test_patch(rom_size: usize, patch_count: usize) -> Vec<u8> {
     patch
 }
 
-fn bench_aps_apply(c: &mut Criterion) {
-    let mut group = c.benchmark_group("aps_apply");
-    group.measurement_time(std::time::Duration::from_secs(15));
+const SIZES: &[usize] = &[
+    1024,             // 1KB
+    10 * 1024,        // 10KB
+    100 * 1024,       // 100KB
+    1024 * 1024,      // 1MB
+    4 * 1024 * 1024,  // 4MB
+    8 * 1024 * 1024,  // 8MB
+    16 * 1024 * 1024, // 16MB
+    32 * 1024 * 1024, // 32MB
+];
 
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB
-        32 * 1024 * 1024, // 32MB
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-        let original = vec![0u8; *size];
+#[divan::bench(args = SIZES)]
+fn aps_apply(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
+    let original = vec![0u8; size];
 
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                let mut rom = original.clone();
-                ApsN64Patcher
-                    .apply(black_box(&mut rom), black_box(&patch))
-                    .unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench_local(|| {
+        let mut rom = original.clone();
+        ApsN64Patcher
+            .apply(divan::black_box(&mut rom), divan::black_box(&patch))
+            .unwrap();
+    });
 }
 
-fn bench_aps_validate(c: &mut Criterion) {
-    let mut group = c.benchmark_group("aps_validate");
+#[divan::bench(args = SIZES)]
+fn aps_validate(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
 
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB
-        32 * 1024 * 1024, // 32MB
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                ApsN64Patcher::validate(black_box(&patch)).unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench(|| {
+        ApsN64Patcher::validate(divan::black_box(&patch)).unwrap();
+    });
 }
 
 fn generate_gba_patch(rom_size: usize) -> Vec<u8> {
@@ -98,70 +76,24 @@ fn generate_gba_patch(rom_size: usize) -> Vec<u8> {
     patch
 }
 
-fn bench_aps_gba_apply(c: &mut Criterion) {
-    let mut group = c.benchmark_group("aps_gba_apply");
-    group.measurement_time(std::time::Duration::from_secs(15));
+#[divan::bench(args = SIZES)]
+fn aps_gba_apply(bencher: Bencher, size: usize) {
+    let patch = generate_gba_patch(size);
+    let original = vec![0u8; size];
 
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB
-        32 * 1024 * 1024, // 32MB
-    ]
-    .iter()
-    {
-        let patch = generate_gba_patch(*size);
-        let original = vec![0u8; *size];
-
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                let mut rom = original.clone();
-                ApsGbaPatcher
-                    .apply(black_box(&mut rom), black_box(&patch))
-                    .unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench_local(|| {
+        let mut rom = original.clone();
+        ApsGbaPatcher
+            .apply(divan::black_box(&mut rom), divan::black_box(&patch))
+            .unwrap();
+    });
 }
 
-fn bench_aps_gba_validate(c: &mut Criterion) {
-    let mut group = c.benchmark_group("aps_gba_validate");
+#[divan::bench(args = SIZES)]
+fn aps_gba_validate(bencher: Bencher, size: usize) {
+    let patch = generate_gba_patch(size);
 
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB
-        32 * 1024 * 1024, // 32MB
-    ]
-    .iter()
-    {
-        let patch = generate_gba_patch(*size);
-
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                ApsGbaPatcher::validate(black_box(&patch)).unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench(|| {
+        ApsGbaPatcher::validate(divan::black_box(&patch)).unwrap();
+    });
 }
-
-criterion_group!(
-    benches,
-    bench_aps_apply,
-    bench_aps_validate,
-    bench_aps_gba_apply,
-    bench_aps_gba_validate
-);
-criterion_main!(benches);

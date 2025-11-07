@@ -1,6 +1,10 @@
-use criterion::{BenchmarkId, Criterion, black_box, criterion_group, criterion_main};
+use divan::Bencher;
 use rom_patcher_core::PatchFormat;
 use rom_patcher_formats::rup::RupPatcher;
+
+fn main() {
+    divan::main();
+}
 
 fn write_vlv(buf: &mut Vec<u8>, value: u64) {
     if value == 0 {
@@ -49,97 +53,43 @@ fn generate_test_patch(rom_size: usize, patch_count: usize) -> Vec<u8> {
     patch
 }
 
-fn bench_rup_apply(c: &mut Criterion) {
-    let mut group = c.benchmark_group("rup_apply");
-    group.measurement_time(std::time::Duration::from_secs(15)); // Ensure no warnings for large files
+const SIZES: &[usize] = &[
+    1024,             // 1KB
+    10 * 1024,        // 10KB
+    100 * 1024,       // 100KB
+    1024 * 1024,      // 1MB
+    4 * 1024 * 1024,  // 4MB
+    8 * 1024 * 1024,  // 8MB
+    16 * 1024 * 1024, // 16MB (IPS max)
+];
 
-    // Test from 1KB up to 16MB (RUP is IPS-based, so 24-bit addressing limit)
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB (IPS max)
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-        let original = vec![0u8; *size];
+#[divan::bench(args = SIZES)]
+fn rup_apply(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
+    let original = vec![0u8; size];
 
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                let mut rom = original.clone();
-                RupPatcher
-                    .apply(black_box(&mut rom), black_box(&patch))
-                    .unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench_local(|| {
+        let mut rom = original.clone();
+        RupPatcher
+            .apply(divan::black_box(&mut rom), divan::black_box(&patch))
+            .unwrap();
+    });
 }
 
-fn bench_rup_validate(c: &mut Criterion) {
-    let mut group = c.benchmark_group("rup_validate");
+#[divan::bench(args = SIZES)]
+fn rup_validate(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
 
-    // Test from 1KB up to 16MB (RUP is IPS-based, so 24-bit addressing limit)
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB (IPS max)
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                RupPatcher::validate(black_box(&patch)).unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench(|| {
+        RupPatcher::validate(divan::black_box(&patch)).unwrap();
+    });
 }
 
-fn bench_rup_metadata(c: &mut Criterion) {
-    let mut group = c.benchmark_group("rup_metadata");
+#[divan::bench(args = SIZES)]
+fn rup_metadata(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
 
-    // Test from 1KB up to 16MB
-    // Metadata extraction is constant-time (only reads fixed header)
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                RupPatcher::metadata(black_box(&patch)).unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench(|| {
+        RupPatcher::metadata(divan::black_box(&patch)).unwrap();
+    });
 }
-
-criterion_group!(
-    benches,
-    bench_rup_apply,
-    bench_rup_validate,
-    bench_rup_metadata
-);
-criterion_main!(benches);

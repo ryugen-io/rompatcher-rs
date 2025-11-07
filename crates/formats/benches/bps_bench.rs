@@ -1,6 +1,10 @@
-use criterion::{BenchmarkId, Criterion, black_box, criterion_group, criterion_main};
+use divan::Bencher;
 use rom_patcher_core::PatchFormat;
 use rom_patcher_formats::bps::BpsPatcher;
+
+fn main() {
+    divan::main();
+}
 
 /// Generate a test BPS patch with mixed actions
 fn generate_test_patch(rom_size: usize, patch_count: usize) -> Vec<u8> {
@@ -57,93 +61,42 @@ fn write_varint(buf: &mut Vec<u8>, mut data: u64) {
     }
 }
 
-fn bench_bps_apply(c: &mut Criterion) {
-    let mut group = c.benchmark_group("bps_apply");
-    group.measurement_time(std::time::Duration::from_secs(15)); // Ensure no warnings for large files
+const SIZES: &[usize] = &[
+    1024,             // 1KB
+    10 * 1024,        // 10KB
+    100 * 1024,       // 100KB
+    1024 * 1024,      // 1MB
+    4 * 1024 * 1024,  // 4MB
+    8 * 1024 * 1024,  // 8MB
+    16 * 1024 * 1024, // 16MB (IPS max, but BPS can go beyond)
+];
 
-    // Test various ROM sizes (BPS has no size limit like IPS's 16MB)
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB (IPS max, but BPS can go beyond)
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-        let original = vec![0u8; *size];
+#[divan::bench(args = SIZES)]
+fn bps_apply(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
+    let original = vec![0u8; size];
 
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                let mut rom = original.clone();
-                // Note: Will fail CRC validation but exercises the apply logic
-                let _ = BpsPatcher.apply(black_box(&mut rom), black_box(&patch));
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench_local(|| {
+        let mut rom = original.clone();
+        // Note: Will fail CRC validation but exercises the apply logic
+        let _ = BpsPatcher.apply(divan::black_box(&mut rom), divan::black_box(&patch));
+    });
 }
 
-fn bench_bps_validate(c: &mut Criterion) {
-    let mut group = c.benchmark_group("bps_validate");
+#[divan::bench(args = SIZES)]
+fn bps_validate(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
 
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                BpsPatcher::validate(black_box(&patch)).unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench(|| {
+        BpsPatcher::validate(divan::black_box(&patch)).unwrap();
+    });
 }
 
-fn bench_bps_metadata(c: &mut Criterion) {
-    let mut group = c.benchmark_group("bps_metadata");
+#[divan::bench(args = SIZES)]
+fn bps_metadata(bencher: Bencher, size: usize) {
+    let patch = generate_test_patch(size, 10);
 
-    for size in [
-        1024,             // 1KB
-        10 * 1024,        // 10KB
-        100 * 1024,       // 100KB
-        1024 * 1024,      // 1MB
-        4 * 1024 * 1024,  // 4MB
-        8 * 1024 * 1024,  // 8MB
-        16 * 1024 * 1024, // 16MB
-    ]
-    .iter()
-    {
-        let patch = generate_test_patch(*size, 10);
-
-        group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, _| {
-            b.iter(|| {
-                BpsPatcher::metadata(black_box(&patch)).unwrap();
-            });
-        });
-    }
-
-    group.finish();
+    bencher.bench(|| {
+        BpsPatcher::metadata(divan::black_box(&patch)).unwrap();
+    });
 }
-
-criterion_group!(
-    benches,
-    bench_bps_apply,
-    bench_bps_validate,
-    bench_bps_metadata
-);
-criterion_main!(benches);
