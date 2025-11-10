@@ -98,6 +98,19 @@ The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP, RUP
 rompatcherrs game.sfc patch.ebp game-patched.sfc
 ```
 
+### Verification and checking modes
+
+```bash
+# Only verify checksums without applying patch
+rompatcherrs game.gbc patch.bps --only verify
+
+# Check ROM against RetroAchievements database
+rompatcherrs game.gb --only ra
+
+# Combine multiple operations
+rompatcherrs game.gbc patch.bps --only verify ra
+```
+
 ## Development
 
 ### Prerequisites
