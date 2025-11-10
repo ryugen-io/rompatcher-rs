@@ -1,6 +1,6 @@
 # ROM Patcher RS
 
-# rom-patcher-rs
+# rompatcherrs
 
 ![Rust 2024](https://img.shields.io/badge/rust-1.91%2B-orange?logo=rust)
 ![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)
@@ -42,7 +42,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 The project is organized as a Cargo workspace with 4 crates:
 
 ```
-rom-patcher-rs/
+rompatcherrs/
 ├── crates/
 │   ├── core/           # Core traits and types
 │   ├── formats/        # Patch format implementations
@@ -67,7 +67,7 @@ Requires Rust 1.91+ with 2024 edition support:
 cargo build --release
 ```
 
-The binary will be at `target/release/rompatchrs`.
+The binary will be at `target/release/rompatcherrs`.
 
 ## Usage
 
@@ -75,19 +75,19 @@ The binary will be at `target/release/rompatchrs`.
 
 ```bash
 # Basic usage (auto-generates output path)
-rompatchrs game.gb patch.ips
+rompatcherrs game.gb patch.ips
 
 # Specify output path
-rompatchrs game.gb patch.ips game-patched.gb
+rompatcherrs game.gb patch.ips game-patched.gb
 
 # With checksum verification (slower, safer - validates all CRC32 checksums)
-rompatchrs game.gbc patch.bps game-patched.gbc --verify
+rompatcherrs game.gbc patch.bps game-patched.gbc --verify
 
 # UPS patches
-rompatchrs game.gba patch.ups game-patched.gba
+rompatcherrs game.gba patch.ups game-patched.gba
 
 # APS N64 patches (.z64/.n64/.v64)
-rompatchrs game.z64 patch.aps game-patched.z64
+rompatcherrs game.z64 patch.aps game-patched.z64
 ```
 
 The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP, RUP) and applies it.
@@ -95,7 +95,7 @@ The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP, RUP
 ### EBP patches (IPS + JSON metadata)
 ```bash
 # EBP is IPS-compatible with optional JSON metadata
-rompatchrs game.sfc patch.ebp game-patched.sfc
+rompatcherrs game.sfc patch.ebp game-patched.sfc
 ```
 
 ## Development
