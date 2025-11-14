@@ -1,4 +1,15 @@
 name: CI
+#
+# CI Control: Use .skip-ci file to disable CI
+#
+# To DISABLE CI:
+#   touch .skip-ci && git add .skip-ci && git commit -m "Disable CI" && git push
+#
+# To ENABLE CI:
+#   git rm .skip-ci && git commit -m "Enable CI" && git push
+#
+# Note: .skip-ci is gitignored by default for local development use
+#
 
 on:
   push:
@@ -11,7 +22,28 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
+  # Check if CI should run by looking for .skip-ci file
+  check-ci-status:
+    name: Check CI Status
+    runs-on: ubuntu-latest
+    outputs:
+      should-run: ${{ steps.check.outputs.should-run }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if CI should run
+        id: check
+        run: |
+          if [ -f .skip-ci ]; then
+            echo "⏭️ Found .skip-ci file - skipping all CI jobs"
+            echo "should-run=false" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No .skip-ci file found - running CI normally"
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          fi
+
   fmt:
+    needs: check-ci-status
+    if: needs.check-ci-status.outputs.should-run == 'true'
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
@@ -23,6 +55,8 @@ jobs:
         run: cargo fmt --all -- --check
 
   clippy:
+    needs: check-ci-status
+    if: needs.check-ci-status.outputs.should-run == 'true'
     name: Clippy
     runs-on: ubuntu-latest
     steps:
@@ -35,6 +69,8 @@ jobs:
         run: cargo clippy --all-features --all-targets -- -D warnings
 
   test:
+    needs: check-ci-status
+    if: needs.check-ci-status.outputs.should-run == 'true'
     name: Test Suite
     strategy:
       matrix:
@@ -51,6 +87,8 @@ jobs:
         run: cargo test --all-features --verbose
 
   bench:
+    needs: check-ci-status
+    if: needs.check-ci-status.outputs.should-run == 'true'
     name: Benchmarks
     runs-on: ubuntu-latest
     steps:
@@ -61,6 +99,8 @@ jobs:
         run: cargo bench --all-features --no-fail-fast
 
   coverage:
+    needs: check-ci-status
+    if: needs.check-ci-status.outputs.should-run == 'true'
     name: Code Coverage
     runs-on: ubuntu-latest
     steps:

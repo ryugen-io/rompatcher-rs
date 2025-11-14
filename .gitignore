@@ -33,6 +33,7 @@ Thumbs.db
 .serena/
 .claude/
 AGENTS.md
+.skip-ci
 
 # Test files with ROM sources/downloads
 test_files/DOWNLOAD_INSTRUCTIONS.md
