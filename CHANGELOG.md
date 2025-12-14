@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Validates and skips PPF3 validation binary (block check)
   - Supports Undo Data skipping
   - Basic validation and metadata extraction
+  - Comprehensive test suite (9 tests) covering apply, undo, errors, metadata, and validation
+- xdelta (Generic binary diff) support
+  - VCDIFF decoder (RFC 3284)
+  - Address cache and default code table
+  - Modular structure (parser, headers, apply, address_cache)
+  - Integration tests (7 tests) covering headers, cache, errors, and basic application
 
 ### Planned
 - SHA-1, SHA-256 hash algorithms
