@@ -21,6 +21,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 - **RUP** (Rupture Patches) - Production Ready (27 tests) - Multi-file bidirectional with MD5
 - **PPF** (PlayStation Patch Format) - Production Ready (20 tests) - Full PPF1/2/3 support
 - **xdelta** (Generic binary diff) - Production Ready (21 tests) - VCDIFF decoder (RFC 3284)
+- **BDF** (Binary Diff Format) - Production Ready (22 tests) - BSDIFF40 compatible
 
 ## Features
 
@@ -206,8 +207,8 @@ Note: BPS/UPS checksums are optional via --verify flag. Without verification, pa
 ## Project Stats
 
 - **Version:** 0.4.4
-- **Test Coverage:** 243 tests
-  - Format tests: 216 (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 26 EBP + 27 RUP + 20 PPF + 21 xdelta)
+- **Test Coverage:** 273 tests
+  - Format tests: 238 (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 26 EBP + 27 RUP + 20 PPF + 21 xdelta + 22 BDF)
   - Integration tests: 14 format helpers + 6 validation + 4 ROM utils
   - RetroAchievements: 11 (7 CLI + 4 features)
 - **Code Quality:** All files under 200 lines (modular structure)

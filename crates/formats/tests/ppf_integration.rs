@@ -1,6 +1,4 @@
-//! PPF (PlayStation Patch Format) integration tests.
-//!
-//! This module runs all tests related to the PPF format.
+//! PPF integration tests
 
 #![cfg(feature = "ppf")]
 mod ppf;
