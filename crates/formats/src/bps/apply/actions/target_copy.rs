@@ -9,6 +9,7 @@ use rom_patcher_core::{PatchError, Result};
 /// Can have overlapping copies - target grows as we copy!
 #[inline]
 pub fn target_copy(ctx: &mut ActionContext, length: usize) -> Result<()> {
+    ctx.check_growth(length)?;
     let (data, bytes_read) = varint::decode(&ctx.patch[*ctx.offset..])
         .map_err(|_| PatchError::InvalidFormat("Invalid TargetCopy offset".to_string()))?;
     *ctx.offset += bytes_read;

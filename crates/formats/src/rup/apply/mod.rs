@@ -22,6 +22,18 @@ pub fn apply(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
     } else {
         file_meta.target_size
     };
+
+    // Limit target size to prevent ASAN crashes
+    const MAX_TARGET_SIZE: u64 = 512 * 1024 * 1024;
+    if target_size > MAX_TARGET_SIZE {
+        return Err(PatchError::InvalidFormat(format!(
+            "Target size too large: {} (max {})",
+            target_size, MAX_TARGET_SIZE
+        )));
+    }
+
+    rom.try_reserve(target_size as usize)
+        .map_err(|_| PatchError::Other("Failed to allocate memory for target ROM".to_string()))?;
     rom.resize(target_size as usize, 0);
 
     apply_xor_records(rom, &file_meta.records)?;

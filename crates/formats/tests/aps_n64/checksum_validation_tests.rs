@@ -34,6 +34,10 @@ fn test_zelda_oot_spanish_patch() {
 
     // Load patch
     let patch_path = test_rom_path("patch.aps");
+    if !patch_path.exists() {
+        println!("Skipping test: patch.aps not found");
+        return;
+    }
     let patch = fs::read(&patch_path).expect("Failed to read APS patch");
 
     println!("Loaded patch: {} bytes", patch.len());
@@ -62,6 +66,10 @@ fn test_zelda_oot_spanish_patch() {
 fn test_patch_file_integrity() {
     // Verify patch file hasn't been corrupted
     let patch_path = test_rom_path("patch.aps");
+    if !patch_path.exists() {
+        println!("Skipping test: patch.aps not found");
+        return;
+    }
     let patch = fs::read(&patch_path).expect("Failed to read patch");
     let patch_crc = crc32fast::hash(&patch);
 

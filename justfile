@@ -101,3 +101,12 @@ semver-check BASELINE:
 # Generate flamegraph for performance profiling
 flamegraph ROM PATCH:
     cargo flamegraph --bin rompatchrs -- {{ROM}} {{PATCH}}
+
+# Run fuzzing (requires cargo-fuzz)
+# Usage: just fuzz fuzz_detect
+fuzz TARGET="fuzz_detect":
+    cargo fuzz run {{TARGET}}
+
+# Run pre-commit checks
+pre-commit: fmt clippy check test
+    @echo "Ready to commit!"

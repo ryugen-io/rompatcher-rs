@@ -5,7 +5,20 @@ use rom_patcher_core::{PatchError, Result};
 pub fn apply(rom: &[u8], patch: &[u8]) -> Result<Vec<u8>> {
     let (header, mut offset) = parse_header(patch)?;
 
-    let mut output = vec![0u8; header.target_size as usize];
+    // Limit target size to prevent ASAN crashes
+    const MAX_TARGET_SIZE: u32 = 512 * 1024 * 1024;
+    if header.target_size > MAX_TARGET_SIZE {
+        return Err(PatchError::InvalidFormat(format!(
+            "Target size too large: {} (max {})",
+            header.target_size, MAX_TARGET_SIZE
+        )));
+    }
+
+    let mut output = Vec::new();
+    output
+        .try_reserve_exact(header.target_size as usize)
+        .map_err(|_| PatchError::Other("Failed to allocate memory for target ROM".to_string()))?;
+    output.resize(header.target_size as usize, 0);
     let copy_len = rom.len().min(output.len());
     output[..copy_len].copy_from_slice(&rom[..copy_len]);
 

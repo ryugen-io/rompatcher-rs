@@ -48,7 +48,11 @@ pub fn validate(patch: &[u8]) -> Result<()> {
     offset += bytes_read;
 
     // Check metadata bounds
-    if offset + metadata_size as usize > patch.len() - FOOTER_SIZE {
+    let metadata_end = offset
+        .checked_add(metadata_size as usize)
+        .ok_or_else(|| PatchError::InvalidFormat("Metadata size too large".to_string()))?;
+
+    if metadata_end > patch.len() - FOOTER_SIZE {
         return Err(PatchError::InvalidFormat(
             "Metadata extends beyond patch bounds".to_string(),
         ));

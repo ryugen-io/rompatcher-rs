@@ -58,3 +58,11 @@ test_files/DOWNLOAD_INSTRUCTIONS.md
 # Note: .bin files are commonly used for PlayStation ROMs
 # Patch files use specific extensions (.ips, .bps, .ppf, etc.)
 *.bin
+
+# Fuzzing artifacts
+fuzz/corpus/
+fuzz/artifacts/
+fuzz/target/
+
+# Local tools
+in-memoria.db

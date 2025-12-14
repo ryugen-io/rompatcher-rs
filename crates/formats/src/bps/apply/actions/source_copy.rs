@@ -8,6 +8,7 @@ use rom_patcher_core::{PatchError, Result};
 /// Execute SOURCE_COPY action
 #[inline]
 pub fn source_copy(ctx: &mut ActionContext, length: usize) -> Result<()> {
+    ctx.check_growth(length)?;
     let (data, bytes_read) = varint::decode(&ctx.patch[*ctx.offset..])
         .map_err(|_| PatchError::InvalidFormat("Invalid SourceCopy offset".to_string()))?;
     *ctx.offset += bytes_read;

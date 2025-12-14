@@ -7,6 +7,7 @@ use rom_patcher_core::{PatchError, Result};
 /// Copies bytes from ROM at current output position (not relative offset!)
 #[inline]
 pub fn source_read(ctx: &mut ActionContext, length: usize) -> Result<()> {
+    ctx.check_growth(length)?;
     let source_offset = ctx.target.len(); // Use current output position, not source_relative_offset!
 
     if source_offset + length > ctx.rom.len() {

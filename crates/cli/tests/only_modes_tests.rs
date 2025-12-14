@@ -7,7 +7,7 @@ use rom_patcher_cli::OnlyMode;
 fn test_only_mode_variants() {
     let verify = OnlyMode::Verify;
     let ra = OnlyMode::Ra;
-    
+
     // Basic construction works
     assert!(matches!(verify, OnlyMode::Verify));
     assert!(matches!(ra, OnlyMode::Ra));
@@ -30,37 +30,37 @@ fn test_empty_modes_vec() {
 /// Test that modes can be iterated
 #[test]
 fn test_modes_iteration() {
-    let modes = vec![OnlyMode::Verify, OnlyMode::Ra];
+    let modes = [OnlyMode::Verify, OnlyMode::Ra];
     let mut count = 0;
-    
+
     for mode in &modes {
         match mode {
             OnlyMode::Verify => count += 1,
             OnlyMode::Ra => count += 1,
         }
     }
-    
+
     assert_eq!(count, 2);
 }
 
 /// Test that modes can be checked with any()
 #[test]
 fn test_modes_any_verify() {
-    let modes = vec![OnlyMode::Verify, OnlyMode::Ra];
+    let modes = [OnlyMode::Verify, OnlyMode::Ra];
     assert!(modes.iter().any(|m| matches!(m, OnlyMode::Verify)));
 }
 
 /// Test that modes can be checked with any() for Ra
 #[test]
 fn test_modes_any_ra() {
-    let modes = vec![OnlyMode::Verify, OnlyMode::Ra];
+    let modes = [OnlyMode::Verify, OnlyMode::Ra];
     assert!(modes.iter().any(|m| matches!(m, OnlyMode::Ra)));
 }
 
 /// Test that single mode works
 #[test]
 fn test_single_verify_mode() {
-    let modes = vec![OnlyMode::Verify];
+    let modes = [OnlyMode::Verify];
     assert_eq!(modes.len(), 1);
     assert!(modes.iter().any(|m| matches!(m, OnlyMode::Verify)));
     assert!(!modes.iter().any(|m| matches!(m, OnlyMode::Ra)));
@@ -69,7 +69,7 @@ fn test_single_verify_mode() {
 /// Test that single Ra mode works
 #[test]
 fn test_single_ra_mode() {
-    let modes = vec![OnlyMode::Ra];
+    let modes = [OnlyMode::Ra];
     assert_eq!(modes.len(), 1);
     assert!(modes.iter().any(|m| matches!(m, OnlyMode::Ra)));
     assert!(!modes.iter().any(|m| matches!(m, OnlyMode::Verify)));
@@ -78,6 +78,6 @@ fn test_single_ra_mode() {
 /// Test that duplicate modes can be stored (if user provides them)
 #[test]
 fn test_duplicate_modes_allowed() {
-    let modes = vec![OnlyMode::Verify, OnlyMode::Verify];
+    let modes = [OnlyMode::Verify, OnlyMode::Verify];
     assert_eq!(modes.len(), 2);
 }

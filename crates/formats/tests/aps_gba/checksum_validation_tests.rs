@@ -63,6 +63,10 @@ fn test_gba_translation_patch() {
     );
 
     let patch_path = test_rom_path("patch.aps");
+    if !patch_path.exists() {
+        println!("Skipping test: patch.aps not found");
+        return;
+    }
     let patch = fs::read(&patch_path).expect("Failed to read APS patch");
 
     println!("Loaded patch: {} bytes", patch.len());

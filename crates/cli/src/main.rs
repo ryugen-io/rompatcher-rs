@@ -40,14 +40,16 @@ struct Cli {
     /// Path to the patch file (not required for --only ra)
     patch: Option<PathBuf>,
 
-    /// Output path (optional, defaults to {rom_dir}/patched/{rom}.patched.{ext})
+    /// Output path (optional, defaults to
+    /// {rom_dir}/patched/{rom}.patched.{ext})
     output: Option<PathBuf>,
 
     /// Verify source/target checksums (slower, safer)
     #[arg(long)]
     verify: bool,
 
-    /// Only perform specific operations without applying patch (can specify multiple)
+    /// Only perform specific operations without applying patch (can specify
+    /// multiple)
     #[arg(long, value_enum, num_args = 1..)]
     only: Vec<OnlyMode>,
 }

@@ -27,6 +27,13 @@ pub fn decode_vlv(data: &[u8]) -> Result<(u64, usize)> {
         )));
     }
 
+    if num_bytes > 8 {
+        return Err(PatchError::InvalidFormat(format!(
+            "VLV too large: {} bytes (max 8)",
+            num_bytes
+        )));
+    }
+
     let mut value: u64 = 0;
     for i in 0..num_bytes {
         value |= (data[1 + i] as u64) << (i * 8);

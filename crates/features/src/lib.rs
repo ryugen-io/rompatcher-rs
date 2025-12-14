@@ -1,6 +1,7 @@
 //! Extended features for ROM patching
 //!
-//! This crate provides optional features that extend the basic patching functionality:
+//! This crate provides optional features that extend the basic patching
+//! functionality:
 //! - Validation: Checksum verification and integrity checks
 //! - RetroAchievements: Hash checking against RetroAchievements database
 

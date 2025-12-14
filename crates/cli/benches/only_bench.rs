@@ -1,3 +1,4 @@
+#![allow(clippy::useless_vec)]
 use rom_patcher_cli::OnlyMode;
 
 fn main() {

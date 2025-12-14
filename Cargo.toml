@@ -26,4 +26,4 @@ strip = true          # Strip symbols automatically
 opt-level = "z"       # Optimize for size
 lto = true            # Link-time optimization
 codegen-units = 1     # Better optimization (slower compile)
-panic = "abort"       # Smaller panic handler
+# panic = "abort"       # Smaller panic handler

@@ -33,8 +33,12 @@ pub fn decode(data: &[u8]) -> Result<(u64, usize)> {
         bytes_read += 1;
 
         // Add lower 7 bits multiplied by shift
+        let part = ((byte & 0x7f) as u64)
+            .checked_mul(shift)
+            .ok_or_else(|| PatchError::Other("Varint multiplication overflow".to_string()))?;
+
         result = result
-            .checked_add((byte & 0x7f) as u64 * shift)
+            .checked_add(part)
             .ok_or_else(|| PatchError::Other("Varint overflow".to_string()))?;
 
         // Check termination bit

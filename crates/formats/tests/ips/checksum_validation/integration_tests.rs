@@ -14,6 +14,10 @@ fn test_sml2dx_patch_checksum() {
 
     // Load original ROM
     let rom_path = test_rom_path("test.rom.gb");
+    if !rom_path.exists() {
+        println!("Skipping test: test.rom.gb not found");
+        return;
+    }
     let mut rom = fs::read(&rom_path).expect("Failed to read ROM");
 
     // Validate input ROM checksum

@@ -19,7 +19,11 @@ pub fn parse_header(patch: &[u8]) -> Result<(u64, u64, usize)> {
 
     let (metadata_size, bytes_read) = varint::decode(&patch[offset..])
         .map_err(|_| PatchError::InvalidFormat("Invalid metadata size".to_string()))?;
-    offset += bytes_read + metadata_size as usize;
+
+    offset = offset
+        .checked_add(bytes_read)
+        .and_then(|o| o.checked_add(metadata_size as usize))
+        .ok_or_else(|| PatchError::InvalidFormat("Metadata size too large".to_string()))?;
 
     Ok((source_size, target_size, offset))
 }

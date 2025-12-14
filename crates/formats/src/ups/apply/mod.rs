@@ -22,7 +22,18 @@ pub fn apply(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
         ));
     }
 
-    // Resize ROM to output size
+    // Limit output size to prevent ASAN crashes
+    const MAX_TARGET_SIZE: u64 = 512 * 1024 * 1024;
+    if output_size > MAX_TARGET_SIZE {
+        return Err(PatchError::InvalidFormat(format!(
+            "Target size too large: {} (max {})",
+            output_size, MAX_TARGET_SIZE
+        )));
+    }
+
+    // Safe resize
+    rom.try_reserve(output_size as usize)
+        .map_err(|_| PatchError::Other("Failed to allocate memory for target ROM".to_string()))?;
     rom.resize(output_size as usize, 0);
 
     // Process XOR records
@@ -32,7 +43,10 @@ pub fn apply(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
         // Read relative offset
         let (relative_offset, bytes_read) = varint::decode(&patch[offset..])?;
         offset += bytes_read;
-        rom_pos += relative_offset as usize;
+
+        rom_pos = rom_pos
+            .checked_add(relative_offset as usize)
+            .ok_or(PatchError::Other("ROM position overflow".to_string()))?;
 
         // Read XOR data until 0x00 terminator
         while offset < patch.len() && patch[offset] != 0x00 {

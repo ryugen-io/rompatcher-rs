@@ -1,0 +1,49 @@
+[package]
+name = "rom-patcher-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[workspace]
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+rom-patcher-core = { path = "../crates/core" }
+rom-patcher-formats = { path = "../crates/formats" }
+
+[[bin]]
+name = "fuzz_detect"
+path = "fuzz_targets/fuzz_detect.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_ips"
+path = "fuzz_targets/fuzz_ips.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_bps"
+path = "fuzz_targets/fuzz_bps.rs"
+
+[[bin]]
+name = "fuzz_ups"
+path = "fuzz_targets/fuzz_ups.rs"
+
+[[bin]]
+name = "fuzz_aps"
+path = "fuzz_targets/fuzz_aps.rs"
+
+[[bin]]
+name = "fuzz_ebp"
+path = "fuzz_targets/fuzz_ebp.rs"
+
+[[bin]]
+name = "fuzz_rup"
+path = "fuzz_targets/fuzz_rup.rs"
+test = false
+doc = false

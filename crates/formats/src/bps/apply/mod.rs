@@ -14,7 +14,17 @@ pub fn apply(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
         return Err(PatchError::InvalidFormat("BPS patch too small".to_string()));
     }
 
+    // Parse header to get metadata sizes
     let (source_size, target_size, mut offset) = parse_header(patch)?;
+
+    // Limit target size to prevent ASAN crashes on huge allocations (e.g. 512MB)
+    const MAX_TARGET_SIZE: u64 = 512 * 1024 * 1024;
+    if target_size > MAX_TARGET_SIZE {
+        return Err(PatchError::InvalidFormat(format!(
+            "Target size too large: {} (max {})",
+            target_size, MAX_TARGET_SIZE
+        )));
+    }
 
     if rom.len() != source_size as usize {
         return Err(PatchError::SizeMismatch {
@@ -23,7 +33,11 @@ pub fn apply(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
         });
     }
 
-    let mut target = Vec::with_capacity(target_size as usize);
+    // Allocate target buffer
+    let mut target = Vec::new();
+    target
+        .try_reserve_exact(target_size as usize)
+        .map_err(|_| PatchError::Other("Failed to allocate memory for target ROM".to_string()))?;
     let mut source_relative_offset: i64 = 0;
     let mut target_relative_offset: i64 = 0;
     let commands_end = patch.len() - FOOTER_SIZE;
@@ -36,6 +50,7 @@ pub fn apply(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
         source_relative_offset: &mut source_relative_offset,
         target_relative_offset: &mut target_relative_offset,
         offset: &mut offset,
+        expected_target_size: target_size as usize,
     };
 
     while *ctx.offset < commands_end {

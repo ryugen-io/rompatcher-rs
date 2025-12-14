@@ -12,14 +12,25 @@ pub fn decode(data: &[u8]) -> Result<(u64, usize)> {
     for &byte in data {
         bytes_read += 1;
 
-        value += (byte & 0x7f) as u64 * shift;
+        let delta = ((byte & 0x7f) as u64)
+            .checked_mul(shift)
+            .ok_or(PatchError::InvalidFormat("Varint overflow".to_string()))?;
+
+        value = value
+            .checked_add(delta)
+            .ok_or(PatchError::InvalidFormat("Varint overflow".to_string()))?;
 
         if (byte & 0x80) != 0 {
             return Ok((value, bytes_read));
         }
 
-        shift <<= 7;
-        value += shift;
+        shift = shift
+            .checked_shl(7)
+            .ok_or(PatchError::InvalidFormat("Varint overflow".to_string()))?;
+
+        value = value
+            .checked_add(shift)
+            .ok_or(PatchError::InvalidFormat("Varint overflow".to_string()))?;
     }
 
     Err(PatchError::InvalidFormat(

@@ -282,6 +282,18 @@ tests/FORMAT_NAME/
 └── checksum_validation_tests.rs # Integration with real patches
 ```
 
+### Fuzzing Guidelines
+
+**Fuzzing Infrastructure**:
+- Located in `fuzz/` directory.
+- Use `just fuzz <target>` to run.
+- Targets: `fuzz_detect`, `fuzz_ips`, `fuzz_bps`, etc.
+
+**Security & Stability**:
+- **Integer Overflows**: Always use `checked_add`, `checked_mul`, etc. for offsets and sizes.
+- **Allocation Limits**: Always verify `target_size` against a sane limit (e.g. `MAX_TARGET_SIZE`) before allocation to avoid OOM/ASAN crashes.
+- **Incremental Growth**: Check bounds/limits when extending vectors incrementally (e.g. `check_growth` pattern).
+
 ## Git Workflow
 
 ### Branch Naming

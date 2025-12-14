@@ -10,6 +10,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Planned
 - SHA-1, SHA-256 hash algorithms
 - Additional CLI commands (info, validate)
+## [0.4.4] - 2025-12-14
+
+### Security
+- **Critical Fuzzing Fixes**: Fixed multiple crashes and vulnerabilities identified by extensive fuzzing
+  - **BPS**: Fixed variable-length integer overflow causing panics, added OOM protection
+  - **UPS**: Fixed varint overflow causing "deadly signal", fixed OOM allocation with `MAX_TARGET_SIZE` (512MB limit)
+  - **APS (N64/GBA)**: Fixed OOM vulnerability where invalid patch headers could trigger massive allocations (e.g., 18EB)
+  - **RUP**: Proactively fixed potential varint overflows and OOM issues
+- **Hardening**:
+  - Implemented `checked_*` arithmetic across all format parsers
+  - Added strict `MAX_TARGET_SIZE` (512MB) limits for all patch application
+  - Used `try_reserve_exact` instead of panic-prone `vec!` macros for target buffers
+
+### Added
+- **Fuzzing Suite**: Added new fuzz targets for UPS, APS, EBP, and RUP formats
+  - Found and fixed 2 new critical bugs after BPS fixes
+  - All formats now covered by continuous fuzzing
+
 
 ## [0.4.3] - 2025-11-07
 

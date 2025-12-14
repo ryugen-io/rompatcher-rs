@@ -6,6 +6,7 @@ use rom_patcher_core::{PatchError, Result};
 /// Execute TARGET_READ action
 #[inline]
 pub fn target_read(ctx: &mut ActionContext, length: usize) -> Result<()> {
+    ctx.check_growth(length)?;
     if *ctx.offset + length > ctx.patch.len() {
         return Err(PatchError::UnexpectedEof(
             "TargetRead exceeds patch bounds".to_string(),

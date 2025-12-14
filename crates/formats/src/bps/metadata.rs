@@ -6,7 +6,8 @@ use rom_patcher_core::{PatchError, PatchMetadata, PatchType, Result};
 
 /// Extract metadata from a BPS patch
 ///
-/// Returns patch metadata including source/target sizes and optional metadata string.
+/// Returns patch metadata including source/target sizes and optional metadata
+/// string.
 pub fn extract_metadata(patch: &[u8]) -> Result<PatchMetadata> {
     if patch.len() < MAGIC_SIZE {
         return Err(PatchError::InvalidFormat("Patch too small".to_string()));
@@ -33,7 +34,10 @@ pub fn extract_metadata(patch: &[u8]) -> Result<PatchMetadata> {
     offset += bytes_read;
 
     if metadata_size > 0 {
-        let metadata_end = offset + metadata_size as usize;
+        let metadata_end = offset
+            .checked_add(metadata_size as usize)
+            .ok_or_else(|| PatchError::InvalidFormat("Metadata size too large".to_string()))?;
+
         if metadata_end > patch.len() {
             return Err(PatchError::UnexpectedEof(
                 "Metadata extends beyond patch".to_string(),

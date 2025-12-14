@@ -4,7 +4,8 @@ use crate::{PatchMetadata, Result};
 
 /// Trait that all patch formats must implement
 ///
-/// This trait provides the core functionality for detecting and applying patches.
+/// This trait provides the core functionality for detecting and applying
+/// patches.
 pub trait PatchFormat: Send + Sync {
     /// Check if this format can handle the given patch data
     ///
@@ -20,7 +21,8 @@ pub trait PatchFormat: Send + Sync {
     /// * `patch` - Slice containing patch data
     ///
     /// # Errors
-    /// Returns an error if the patch is invalid, corrupted, or cannot be applied
+    /// Returns an error if the patch is invalid, corrupted, or cannot be
+    /// applied
     fn apply(&self, rom: &mut Vec<u8>, patch: &[u8]) -> Result<()>;
 
     /// Extract metadata from a patch file

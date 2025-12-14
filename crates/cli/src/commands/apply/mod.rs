@@ -37,7 +37,8 @@ pub fn execute(
     // Safety check: prevent overwriting input (skip in only-modes)
     if only_modes.is_empty() && rom_path == output_path {
         anyhow::bail!(
-            "Input and output paths cannot be the same. Use a different output path to preserve the original ROM."
+            "Input and output paths cannot be the same. Use a different output path to preserve \
+             the original ROM."
         );
     }
 

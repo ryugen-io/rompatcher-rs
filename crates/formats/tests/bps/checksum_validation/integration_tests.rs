@@ -24,6 +24,10 @@ fn test_samurai_kid_patch() {
 
     // Load patch
     let patch_path = test_rom_path("patch.bps");
+    if !patch_path.exists() {
+        println!("Skipping test: patch.bps not found");
+        return;
+    }
     let patch = fs::read(&patch_path).expect("Failed to read BPS patch");
 
     println!("Loaded patch: {} bytes", patch.len());
@@ -55,6 +59,6 @@ fn test_samurai_kid_patch() {
     let output_crc = crc32fast::hash(&rom);
     println!("Output CRC32: {:08X}", output_crc);
 
-    // TODO: Add expected output CRC32 when we have reference implementation output
-    // For now, just verify the patch applied without errors
+    // TODO: Add expected output CRC32 when we have reference implementation
+    // output For now, just verify the patch applied without errors
 }
