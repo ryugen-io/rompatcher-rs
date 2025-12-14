@@ -47,3 +47,9 @@ name = "fuzz_rup"
 path = "fuzz_targets/fuzz_rup.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "fuzz_ppf"
+path = "fuzz_targets/fuzz_ppf.rs"
+test = false
+doc = false
