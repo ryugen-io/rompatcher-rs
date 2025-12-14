@@ -1,9 +1,6 @@
 //! xdelta header parsing tests
 
-use rom_patcher_formats::xdelta::{
-    headers::WindowHeader,
-    parser::VcdiffParser,
-};
+use rom_patcher_formats::xdelta::{headers::WindowHeader, parser::VcdiffParser};
 
 #[test]
 fn test_decode_window_header_minimal() {
@@ -23,10 +20,10 @@ fn test_decode_window_header_minimal() {
         0x00, // Inst
         0x00, // Addr
     ];
-    
+
     let mut parser = VcdiffParser::new(&data);
     let header = WindowHeader::decode(&mut parser).unwrap();
-    
+
     assert_eq!(header.indicator, 0);
     assert_eq!(header.target_window_length, 0);
 }

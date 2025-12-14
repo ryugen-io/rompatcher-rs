@@ -8,7 +8,10 @@ fn test_xdelta_invalid_magic() {
     let patch = b"NOT_XDELTA";
     let mut rom = vec![0u8; 10];
     let patcher = XdeltaPatcher;
-    assert!(matches!(patcher.apply(&mut rom, patch), Err(PatchError::InvalidMagic { .. })));
+    assert!(matches!(
+        patcher.apply(&mut rom, patch),
+        Err(PatchError::InvalidMagic { .. })
+    ));
 }
 
 #[test]

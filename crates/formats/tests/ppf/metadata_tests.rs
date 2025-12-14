@@ -46,3 +46,54 @@ fn test_metadata_simple_ppf3() {
     assert_eq!(get_extra("block_check"), Some("true"));
     assert_eq!(get_extra("undo_data"), Some("true"));
 }
+
+#[test]
+fn test_metadata_ppf2_fields() {
+    let mut patch_data = Vec::new();
+    patch_data.extend_from_slice(b"PPF20");
+    patch_data.push(0x01);
+    patch_data.extend_from_slice(&[0u8; 50]);
+    patch_data.extend_from_slice(&12345u32.to_le_bytes()); // Input size
+    patch_data.extend_from_slice(&[0u8; 1024]); // Block check
+
+    let metadata = PpfPatcher::metadata(&patch_data).unwrap();
+    let get_extra = |key: &str| {
+        metadata
+            .extra
+            .iter()
+            .find(|(k, _)| k == key)
+            .map(|(_, v): &(String, String)| v.as_str())
+    };
+
+    assert_eq!(get_extra("version"), Some("PPF2"));
+    assert_eq!(get_extra("input_file_size"), Some("12345"));
+    assert_eq!(get_extra("block_check"), Some("true"));
+}
+
+#[test]
+fn test_metadata_file_id_diz_extraction() {
+    let mut patch_data = Vec::new();
+    patch_data.extend_from_slice(b"PPF30");
+    patch_data.push(0x02);
+    patch_data.extend_from_slice(&[0u8; 50]);
+    patch_data.push(0x00);
+    patch_data.push(0x00);
+    patch_data.push(0x00);
+    patch_data.push(0x00);
+
+    // DIZ block
+    patch_data.extend_from_slice(b"@BEG");
+    patch_data.extend_from_slice(b"Test DIZ Content");
+    patch_data.extend_from_slice(b"@END_FILE_ID.DIZ");
+
+    let metadata = PpfPatcher::metadata(&patch_data).unwrap();
+    let get_extra = |key: &str| {
+        metadata
+            .extra
+            .iter()
+            .find(|(k, _)| k == key)
+            .map(|(_, v): &(String, String)| v.as_str())
+    };
+
+    assert_eq!(get_extra("file_id_diz"), Some("Test DIZ Content"));
+}
