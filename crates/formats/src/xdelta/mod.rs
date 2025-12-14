@@ -4,9 +4,12 @@
 //! It is commonly used for patching larger files like NDS/PS2/PSP games.
 
 mod address_cache;
+mod apply;
 mod checksum;
 mod code_table;
-mod decoder;
+mod constants;
+mod headers;
+mod parser;
 
 use rom_patcher_core::{PatchError, PatchFormat, PatchMetadata, PatchType, Result};
 
@@ -28,7 +31,7 @@ impl PatchFormat for XdeltaPatcher {
             });
         }
 
-        decoder::apply_patch(rom, patch)
+        apply::apply_patch(rom, patch)
     }
 
     fn metadata(patch: &[u8]) -> Result<PatchMetadata> {

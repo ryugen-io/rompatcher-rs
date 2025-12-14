@@ -1,5 +1,6 @@
 //! VCDIFF default code table (RFC 3284)
 
+use crate::xdelta::constants::{VCD_ADD, VCD_COPY, VCD_NOOP, VCD_RUN};
 use std::sync::OnceLock;
 
 #[derive(Clone, Copy, Debug)]
@@ -8,11 +9,6 @@ pub struct Instruction {
     pub size: u8,
     pub mode: u8,
 }
-
-pub const VCD_NOOP: u8 = 0;
-pub const VCD_ADD: u8 = 1;
-pub const VCD_RUN: u8 = 2;
-pub const VCD_COPY: u8 = 3;
 
 static DEFAULT_CODE_TABLE: OnceLock<[[Instruction; 2]; 256]> = OnceLock::new();
 
