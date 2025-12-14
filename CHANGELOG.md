@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- xdelta (VCDIFF) format support (RFC 3284)
+  - Ported VCDIFF decoder implementation from RomPatcher.js
+  - Support for Window header decoding
+  - Support for ADD, RUN, and COPY instructions
+  - Address cache (Near/Same modes) implementation
+  - Default Code Table implementation
 - PPF (PlayStation Patch Format) support
   - Supports PPF1, PPF2, and PPF3 patch application
   - Validates and skips PPF3 validation binary (block check)
