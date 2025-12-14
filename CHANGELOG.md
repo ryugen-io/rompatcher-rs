@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- PPF (PlayStation Patch Format) support (partial implementation)
+- PPF (PlayStation Patch Format) support
   - Supports PPF1, PPF2, and PPF3 patch application
   - Validates and skips PPF3 validation binary (block check)
   - Supports Undo Data skipping

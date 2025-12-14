@@ -5,6 +5,7 @@
 
 pub mod apply;
 pub mod constants;
+pub mod helpers;
 pub mod metadata;
 pub mod validate;
 
