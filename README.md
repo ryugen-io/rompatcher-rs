@@ -1,7 +1,5 @@
 ![stitchr](header.svg)
 
-# stitchr
-
 ![Rust 2024](https://img.shields.io/badge/rust-1.91%2B-orange?logo=rust)
 ![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)
 ![Tests](https://img.shields.io/badge/tests-243%20passing-success)
