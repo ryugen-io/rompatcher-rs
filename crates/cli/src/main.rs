@@ -31,7 +31,7 @@ impl From<OnlyMode> for OnlyModeLib {
 
 /// ROM Patcher - Apply patches to ROM files
 #[derive(Parser, Debug)]
-#[command(name = "rompatchrs")]
+#[command(name = "stitchr")]
 #[command(author, version, about, long_about = None)]
 struct Cli {
     /// Path to the ROM file

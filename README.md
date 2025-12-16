@@ -1,4 +1,4 @@
-# ROM Patcher RS
+![stitchr](header.svg)
 
 # rompatcherrs
 

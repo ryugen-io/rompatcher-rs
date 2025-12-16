@@ -63,3 +63,18 @@ required-features = ["ebp"]
 name = "rup_bench"
 harness = false
 required-features = ["rup"]
+
+[[bench]]
+name = "ppf_bench"
+harness = false
+required-features = ["ppf"]
+
+[[bench]]
+name = "xdelta_bench"
+harness = false
+required-features = ["xdelta"]
+
+[[bench]]
+name = "bdf_bench"
+harness = false
+required-features = ["bdf"]

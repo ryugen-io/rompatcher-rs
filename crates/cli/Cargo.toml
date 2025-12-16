@@ -13,7 +13,7 @@ name = "rom_patcher_cli"
 path = "src/lib.rs"
 
 [[bin]]
-name = "rompatchrs"
+name = "stitchr"
 path = "src/main.rs"
 
 [dependencies]
