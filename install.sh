@@ -16,9 +16,9 @@ COLOR_ERROR='\033[38;2;255;85;85m'
 NC='\033[0m'
 
 # Ascii Art with Gradient Effect (Line by Line)
-echo -e "${COLOR_PRIMARY}┏━┓╺┳╸╻╺┳╸┏━╸╻ ╻┏━┓${NC}"
-echo -e "${COLOR_SECONDARY}┗━┓ ┃ ┃ ┃ ┃  ┣━┫┣┳┛${NC}"
-echo -e "${COLOR_INFO}┗━┛ ╹ ╹ ╹ ┗━╸╹ ╹╹┗╸${NC}"
+echo -e "${COLOR_PRIMARY} _______ _______ _____ _______ _______ _     _  ______${NC}"
+echo -e "${COLOR_SECONDARY} |______    |      |      |    |       |_____| |_____/${NC}"
+echo -e "${COLOR_INFO} ______|    |    __|__    |    |_____  |     | |    \_${NC}"
 echo ""
 
 echo -e "${COLOR_PRIMARY}==> Building 'stitchr' (Release mode)...${NC}"
