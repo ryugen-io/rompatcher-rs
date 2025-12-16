@@ -42,7 +42,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 Install `stitchr` instantly with our automated installer (requires `curl` and `cargo`):
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/ryugen-io/rompatcher-rs/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/ryugen-io/stitchr/master/install.sh)
 ```
 
 This will:
@@ -55,8 +55,8 @@ This will:
 Clone the repository and run the install script:
 
 ```bash
-git clone https://github.com/ryugen-io/rompatcher-rs.git
-cd rompatcher-rs
+git clone https://github.com/ryugen-io/stitchr.git
+cd stitchr
 ./install.sh
 ```
 
