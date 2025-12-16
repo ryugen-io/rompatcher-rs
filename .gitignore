@@ -49,7 +49,6 @@ test_files/DOWNLOAD_INSTRUCTIONS.md
 *.z64
 *.v64
 *.nds
-!test_files/xdelta/test.rom.nds
 *.3ds
 *.iso
 *.cue

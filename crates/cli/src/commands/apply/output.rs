@@ -11,32 +11,30 @@ pub fn write_patched_rom(
     patched_rom: &[u8],
     original_size: usize,
     output_path: &Path,
-    quiet: bool,
+    verbose: u8,
 ) -> Result<()> {
     // Write to temp file first, then atomic rename
     let temp_path = output_path.with_extension("tmp");
+    if verbose > 0 {
+        println!("Writing temporary output: {}", temp_path.display());
+    }
     fs::write(&temp_path, patched_rom).context("Failed to write temporary output file")?;
     fs::rename(&temp_path, output_path).context("Failed to finalize output file")?;
 
-    if !quiet {
-        println!("Successfully patched: {}", output_path.display());
-        println!("ROM size: {} → {} bytes", original_size, patched_rom.len());
-    }
+    println!("Successfully patched: {}", output_path.display());
+    println!("ROM size: {} → {} bytes", original_size, patched_rom.len());
 
-    // Always show output checksum (unless quiet)
+    // Always show output checksum
     #[cfg(feature = "validation")]
     {
-        if !quiet {
-            let crc = crate::utils::validation::compute_crc32(patched_rom);
-            println!(
-                "Output ROM CRC32: {}",
-                crate::utils::validation::format_crc32(crc)
-            );
-        }
+        let crc = crate::utils::validation::compute_crc32(patched_rom);
+        println!(
+            "Output ROM CRC32: {}",
+            crate::utils::validation::format_crc32(crc)
+        );
     }
 
     // RetroAchievements hash check (if enabled)
-    // TODO: Pass quiet to RA check too
     #[cfg(feature = "retroachievements")]
     {
         crate::utils::retroachievements::check_and_display(patched_rom, output_path);

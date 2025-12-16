@@ -23,7 +23,6 @@ pub fn execute(
     verify: bool,
     only_modes: Vec<rom_patcher_cli::OnlyMode>,
     verbose: u8,
-    quiet: bool,
 ) -> Result<()> {
     // Generate default output path if not specified (not needed for only-modes)
     let output_path = if only_modes.is_empty() {
@@ -35,6 +34,10 @@ pub fn execute(
         // Dummy path for only-modes (won't be used)
         rom_path.with_extension("dummy")
     };
+
+    if verbose > 0 {
+        println!("Output path resolved to: {}", output_path.display());
+    }
 
     // Safety check: prevent overwriting input (skip in only-modes)
     if only_modes.is_empty() && rom_path == output_path {
@@ -49,7 +52,7 @@ pub fn execute(
         for mode in &only_modes {
             match mode {
                 rom_patcher_cli::OnlyMode::Ra => {
-                    only::handle_ra_mode(&rom_path, quiet)?;
+                    only::handle_ra_mode(&rom_path, verbose)?;
                 }
                 rom_patcher_cli::OnlyMode::Verify => {
                     // Verify needs patch, handled below
@@ -70,19 +73,21 @@ pub fn execute(
     let patch_path = patch_path.expect("Patch path should be validated in main");
 
     // Load ROM and patch with checksum display
-    let original_rom = input::load_rom_with_checksum(&rom_path, quiet)?;
-    let patch_data = input::load_patch_with_checksum(&patch_path, quiet)?;
+    let original_rom = input::load_rom_with_checksum(&rom_path, verbose)?;
+    let patch_data = input::load_patch_with_checksum(&patch_path, verbose)?;
 
     // Auto-detect patch format
     let patch_type =
         detect_format(&patch_data).context("Could not detect patch format from file header")?;
 
-    if !quiet {
-        println!(
-            "Detected format: {} ({})",
-            patch_type.name(),
-            patch_type.extension()
-        );
+    println!(
+        "Detected format: {} ({})",
+        patch_type.name(),
+        patch_type.extension()
+    );
+
+    if verbose > 0 {
+        println!("Internal patch type: {:?}", patch_type);
     }
 
     // Handle --only verify mode
@@ -99,13 +104,11 @@ pub fn execute(
     if verify {
         // IPS format has no embedded checksums - skip verification
         if patch_type.name() == "International Patching System" {
-            if !quiet {
-                println!(
-                    "Note: IPS format does not support checksum verification (no embedded checksums)"
-                );
-            }
+            println!(
+                "Note: IPS format does not support checksum verification (no embedded checksums)"
+            );
         } else {
-            if !quiet {
+            if verbose > 0 {
                 println!("Verifying source ROM checksum...");
             }
             super::verify::verify_source(&original_rom, &patch_data, &patch_type)
@@ -117,8 +120,8 @@ pub fn execute(
     let mut patched_rom = original_rom.clone();
 
     // Apply patch with format-specific handler
-    if !quiet && verbose > 0 {
-        println!("Applying patch...");
+    if verbose > 0 {
+        println!("Applying patch data to ROM buffer...");
     }
     super::dispatch::apply_patch(&mut patched_rom, &patch_data, &patch_type)
         .context("Failed to apply patch")?;
@@ -127,7 +130,7 @@ pub fn execute(
     if verify {
         // IPS format has no embedded checksums - skip verification
         if patch_type.name() != "International Patching System" {
-            if !quiet {
+            if verbose > 0 {
                 println!("Verifying target ROM checksum...");
             }
             super::verify::verify_target(&original_rom, &patched_rom, &patch_data, &patch_type)
@@ -137,7 +140,7 @@ pub fn execute(
 
     // Write output with checksum display
     let original_size = original_rom.len();
-    output::write_patched_rom(&patched_rom, original_size, &output_path, quiet)?;
+    output::write_patched_rom(&patched_rom, original_size, &output_path, verbose)?;
 
     Ok(())
 }

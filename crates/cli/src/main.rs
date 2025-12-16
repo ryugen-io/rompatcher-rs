@@ -56,10 +56,6 @@ struct Cli {
     /// Verbose output (can be used multiple times)
     #[arg(short, long, action = clap::ArgAction::Count)]
     verbose: u8,
-
-    /// Quiet output (no stdout, only errors)
-    #[arg(short, long)]
-    quiet: bool,
 }
 
 fn main() -> Result<()> {
@@ -78,6 +74,5 @@ fn main() -> Result<()> {
         cli.verify,
         only_modes,
         cli.verbose,
-        cli.quiet,
     )
 }
