@@ -35,6 +35,31 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 - SHA-1, SHA-256 checksums
 - Additional output options and verbosity controls
 
+## Installation
+
+### One-Liner (Recommended)
+
+Install `stitchr` instantly with our automated installer (requires `curl` and `cargo`):
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/ryugen-io/rompatcher-rs/master/install.sh)
+```
+
+This will:
+1. Build the project in release mode
+2. Install the binary to `~/.local/bin`
+3. Verify your PATH configuration
+
+### Manual
+
+Clone the repository and run the install script:
+
+```bash
+git clone https://github.com/ryugen-io/rompatcher-rs.git
+cd rompatcher-rs
+./install.sh
+```
+
 ## Architecture
 
 The project is organized as a Cargo workspace with 4 crates:
