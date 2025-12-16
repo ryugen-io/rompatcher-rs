@@ -1,11 +1,11 @@
 ![stitchr](header.svg)
 
-# rompatcherrs
+# stitchr
 
 ![Rust 2024](https://img.shields.io/badge/rust-1.91%2B-orange?logo=rust)
 ![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)
 ![Tests](https://img.shields.io/badge/tests-243%20passing-success)
-![Formats](https://img.shields.io/badge/formats-7%20supported-blue)
+![Formats](https://img.shields.io/badge/formats-10%20supported-blue)
 ![Safe Rust](https://img.shields.io/badge/unsafe-0%25-success)
 
 A modern, modular ROM patcher written in Rust supporting multiple patch formats.
@@ -26,7 +26,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 ## Features
 
 ### Implemented
-- **Apply patches:** IPS, BPS, UPS, APS N64, APS GBA, EBP, RUP, PPF, xdelta formats with automatic detection
+- **Apply patches:** IPS, BPS, UPS, APS N64, APS GBA, EBP, RUP, PPF, xdelta, BDF formats with automatic detection
 - **Validation:** Optional CRC32/Adler32 verification via --verify flag
 - **Hashing:** CRC32, Adler32, and MD5 computation
 - **RetroAchievements:** Console detection + hash verification
@@ -42,7 +42,7 @@ A modern, modular ROM patcher written in Rust supporting multiple patch formats.
 The project is organized as a Cargo workspace with 4 crates:
 
 ```
-rompatcherrs/
+stitchr/
 ├── crates/
 │   ├── core/           # Core traits and types
 │   ├── formats/        # Patch format implementations
@@ -67,7 +67,7 @@ Requires Rust 1.91+ with 2024 edition support:
 cargo build --release
 ```
 
-The binary will be at `target/release/rompatcherrs`.
+The binary will be at `target/release/stitchr`.
 
 ## Usage
 
@@ -75,46 +75,46 @@ The binary will be at `target/release/rompatcherrs`.
 
 ```bash
 # Basic usage (auto-generates output path)
-rompatcherrs game.gb patch.ips
+stitchr game.gb patch.ips
 
 # Specify output path
-rompatcherrs game.gb patch.ips game-patched.gb
+stitchr game.gb patch.ips game-patched.gb
 
 # With checksum verification (slower, safer - validates all CRC32 checksums)
-rompatcherrs game.gbc patch.bps game-patched.gbc --verify
+stitchr game.gbc patch.bps game-patched.gbc --verify
 
 # UPS patches
-rompatcherrs game.gba patch.ups game-patched.gba
+stitchr game.gba patch.ups game-patched.gba
 
 # APS N64 patches (.z64/.n64/.v64)
-rompatcherrs game.z64 patch.aps game-patched.z64
+stitchr game.z64 patch.aps game-patched.z64
 
 # PPF patches (PlayStation)
-rompatcherrs game.bin patch.ppf game-patched.bin
+stitchr game.bin patch.ppf game-patched.bin
 
 # xdelta patches (DS, PS2, etc.)
-rompatcherrs game.nds patch.xdelta game-patched.nds
+stitchr game.nds patch.xdelta game-patched.nds
 ```
 
-The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP, RUP, PPF, xdelta) and applies it.
+The patcher automatically detects the patch format (IPS, BPS, UPS, APS, EBP, RUP, PPF, xdelta, BDF) and applies it.
 
 ### EBP patches (IPS + JSON metadata)
 ```bash
 # EBP is IPS-compatible with optional JSON metadata
-rompatcherrs game.sfc patch.ebp game-patched.sfc
+stitchr game.sfc patch.ebp game-patched.sfc
 ```
 
 ### Verification and checking modes
 
 ```bash
 # Only verify checksums without applying patch
-rompatcherrs game.gbc patch.bps --only verify
+stitchr game.gbc patch.bps --only verify
 
 # Check ROM against RetroAchievements database
-rompatcherrs game.gb --only ra
+stitchr game.gb --only ra
 
 # Combine multiple operations
-rompatcherrs game.gbc patch.bps --only verify ra
+stitchr game.gbc patch.bps --only verify ra
 ```
 
 ## Development
@@ -169,33 +169,39 @@ MIT OR Apache-2.0
 
 ## Performance
 
-Benchmarked on various ROM sizes (v0.2.9):
+Benchmarked on various ROM sizes (v0.4.3):
 
 ### Apply Performance
 
-| Format | 1KB | 100KB | 1MB | 4MB | 16MB |
-|--------|-----|-------|-----|-----|------|
-| **IPS** | 59ns | 1.4µs | 15.8µs | 73µs | 291µs |
-| **BPS** | 98ns | 1.4µs | 267µs | 1.2ms | 5.1ms |
-| **UPS** | 67ns | 1.4µs | 16µs | 73.7µs | 292µs |
-| **APS N64** | 139ns | 3.5µs | 572µs | 2.4ms | 9.7ms |
-| **APS GBA** | 1.8µs | 57µs | 96µs | 227µs | 10ms |
-| **RUP** | 3.5µs | 298µs | 3.1ms | 12.3ms | 49ms |
+| Format | 1KB | 100KB | 1MB | 16MB |
+|--------|-----|-------|-----|------|
+| **IPS** | ~93ns | ~2µs | ~27µs | ~700µs |
+| **BPS** | ~137ns | ~9µs | ~335µs | ~2.1ms |
+| **UPS** | ~1.5µs | ~16µs | ~27µs | ~6.5ms |
+| **APS N64** | ~437ns | ~52µs | ~985µs | ~12ms |
+| **APS GBA** | ~2.2µs | ~79µs | ~370µs | ~17ms |
+| **RUP** | ~4.9µs | ~420µs | ~3.9ms | ~64ms |
+| **PPF** | ~550ns | ~2.8µs | ~32µs | ~621µs |
+| **BDF** | ~14.6µs | ~1.2ms | ~14.5ms | N/A |
+| **xdelta** | N/A | N/A | ~32ms | N/A |
 
 ### Validation Performance (constant time)
 
-- **IPS validate:** ~18ns (magic + size check)
-- **BPS validate:** ~37-46ns (magic + varint + bounds)
-- **UPS validate:** ~18-29ns (magic + size check)
-- **APS N64 validate:** ~63ns (magic + N64 header)
-- **APS GBA validate:** ~3.8ns (magic + size check)
-- **RUP validate:** ~2.08ns (magic check)
+- **IPS validate:** ~26ns
+- **BPS validate:** ~51ns
+- **UPS validate:** ~44ns
+- **APS N64 validate:** ~93ns
+- **APS GBA validate:** ~5.6ns
+- **RUP validate:** ~3.6ns
+- **PPF validate:** ~375ns
+- **BDF validate:** ~20ns
+- **xdelta validate:** ~3.7ns
 
 ### Metadata Extraction (constant time)
 
-- **BPS metadata:** ~18-20ns
-- **UPS metadata:** ~10-11ns
-- **RUP metadata:** ~287ns (with JSON parsing)
+- **BPS metadata:** ~23ns
+- **UPS metadata:** ~186ns
+- **RUP metadata:** ~297ns
 
 ### Binary
 
@@ -206,7 +212,7 @@ Note: BPS/UPS checksums are optional via --verify flag. Without verification, pa
 
 ## Project Stats
 
-- **Version:** 0.4.4
+- **Version:** 0.4.3
 - **Test Coverage:** 273 tests
   - Format tests: 238 (20 IPS + 28 BPS + 26 UPS + 24 APS N64 + 24 APS GBA + 26 EBP + 27 RUP + 20 PPF + 21 xdelta + 22 BDF)
   - Integration tests: 14 format helpers + 6 validation + 4 ROM utils

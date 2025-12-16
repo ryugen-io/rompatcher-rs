@@ -8,6 +8,7 @@ fn main() {
 
 // We use the existing test file for benchmarking
 const PATCH_BYTES: &[u8] = include_bytes!("../../../test_files/xdelta/patch.xdelta");
+const ROM_BYTES: &[u8] = include_bytes!("../../../test_files/xdelta/test.rom.nds");
 
 #[divan::bench]
 fn xdelta_validate(bencher: Bencher) {
@@ -16,15 +17,12 @@ fn xdelta_validate(bencher: Bencher) {
     });
 }
 
-// We can attempt to apply, but it might fail due to checksum mismatch with dummy ROM.
-// We just want to measure the overhead of parsing up to that failure point or full apply if valid.
+// Now with actual ROM bytes
 #[divan::bench]
-fn xdelta_apply_dummy(bencher: Bencher) {
-    let rom = vec![0u8; 1024 * 1024]; // 1MB dummy ROM
-
+fn xdelta_apply(bencher: Bencher) {
     bencher.bench_local(|| {
-        let mut rom_clone = rom.clone();
+        let mut rom = ROM_BYTES.to_vec(); // Clone to make it mutable
         // Ignore result as we expect failure or partial success depending on patch content
-        let _ = XdeltaPatcher.apply(divan::black_box(&mut rom_clone), divan::black_box(PATCH_BYTES));
+        let _ = XdeltaPatcher.apply(divan::black_box(&mut rom), divan::black_box(PATCH_BYTES));
     });
 }
