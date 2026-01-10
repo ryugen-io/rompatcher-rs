@@ -1,9 +1,9 @@
 //! File integrity verification tests
 
 use super::helpers::*;
+use std::fs;
 use stitchr_core::PatchFormat;
 use stitchr_formats::bps::BpsPatcher;
-use std::fs;
 
 #[test]
 fn test_patch_file_integrity() {

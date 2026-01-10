@@ -9,6 +9,6 @@ use crate::commands::apply::input;
 pub fn handle_ra_mode(rom_path: &Path, verbose: u8) -> Result<()> {
     println!("Running RetroAchievements check (ROM-only mode)");
     let rom = input::load_rom_with_checksum(rom_path, verbose)?;
-    crate::utils::retroachievements::check_and_display(&rom, rom_path);
+    crate::utils::retroachievements::check_and_display(&rom, rom_path, verbose);
     Ok(())
 }

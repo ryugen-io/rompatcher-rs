@@ -1,8 +1,8 @@
 use bzip2::Compression;
 use bzip2::write::BzEncoder;
+use std::io::Write;
 use stitchr_core::PatchFormat;
 use stitchr_formats::bdf::{BdfPatcher, constants::BDF_MAGIC};
-use std::io::Write;
 
 fn create_valid_bzip_block(data: &[u8]) -> Vec<u8> {
     let mut encoder = BzEncoder::new(Vec::new(), Compression::default());

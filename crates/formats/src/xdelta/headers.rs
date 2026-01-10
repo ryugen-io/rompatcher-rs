@@ -4,8 +4,8 @@ use crate::xdelta::{
     constants::{VCD_ADLER32, VCD_SOURCE, VCD_TARGET},
     parser::VcdiffParser,
 };
-use stitchr_core::{PatchError, Result};
 use std::io::Read;
+use stitchr_core::{PatchError, Result};
 
 pub struct WindowHeader {
     pub indicator: u8,

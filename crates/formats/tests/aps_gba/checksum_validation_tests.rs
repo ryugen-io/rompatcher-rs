@@ -1,9 +1,9 @@
 //! Integration tests for APS GBA with real ROM patches
 
-use stitchr_core::PatchFormat;
-use stitchr_formats::aps::gba::ApsGbaPatcher;
 use std::fs;
 use std::path::PathBuf;
+use stitchr_core::PatchFormat;
+use stitchr_formats::aps::gba::ApsGbaPatcher;
 
 fn test_rom_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))

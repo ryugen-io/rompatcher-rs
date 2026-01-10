@@ -10,9 +10,9 @@ use crate::xdelta::{
     headers::{WindowHeader, calculate_target_size},
     parser::VcdiffParser,
 };
+use std::io::Read;
 use stitchr_core::{PatchError, Result};
 use stitchr_features::validation::algorithms::adler32;
-use std::io::Read;
 
 pub fn apply_patch(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {
     let mut parser = VcdiffParser::new(patch);

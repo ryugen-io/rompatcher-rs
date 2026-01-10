@@ -5,8 +5,8 @@
 
 use crate::ppf::constants::*;
 use byteorder::{LittleEndian, ReadBytesExt};
-use stitchr_core::{PatchError, Result};
 use std::io::{Read, Seek, SeekFrom};
+use stitchr_core::{PatchError, Result};
 
 #[derive(Debug)]
 pub struct PpfHeader {

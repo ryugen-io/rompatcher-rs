@@ -22,7 +22,8 @@ fn xdelta_validate(bencher: Bencher) {
 fn xdelta_apply(bencher: Bencher) {
     bencher.bench_local(|| {
         let mut rom = ROM_BYTES.to_vec(); // Clone to make it mutable
-        // Ignore result as we expect failure or partial success depending on patch content
+        // Ignore result as we expect failure or partial success depending on patch
+        // content
         let _ = XdeltaPatcher.apply(divan::black_box(&mut rom), divan::black_box(PATCH_BYTES));
     });
 }

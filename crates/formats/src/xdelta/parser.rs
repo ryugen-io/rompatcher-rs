@@ -1,7 +1,7 @@
 //! VCDIFF parser primitive
 
-use stitchr_core::{PatchError, Result};
 use std::io::{Cursor, Read, Seek, SeekFrom};
+use stitchr_core::{PatchError, Result};
 
 pub struct VcdiffParser<'a> {
     pub cursor: Cursor<&'a [u8]>,

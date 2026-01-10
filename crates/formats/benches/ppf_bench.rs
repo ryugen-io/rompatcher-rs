@@ -19,7 +19,7 @@ fn generate_ppf_patch(rom_size: usize, patch_count: usize) -> Vec<u8> {
     let interval = rom_size / patch_count.max(1);
     for i in 0..patch_count {
         let offset = (i * interval) as u64;
-        
+
         // Offset (8 bytes LE)
         patch.extend_from_slice(&offset.to_le_bytes());
         // Length (1 byte) - writing 1 byte

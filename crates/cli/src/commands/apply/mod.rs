@@ -5,8 +5,8 @@ mod only;
 mod output;
 
 use anyhow::{Context, Result};
-use stitchr_formats::detect_format;
 use std::path::PathBuf;
+use stitchr_formats::detect_format;
 
 /// Apply a patch to a ROM file with transactional safety
 ///

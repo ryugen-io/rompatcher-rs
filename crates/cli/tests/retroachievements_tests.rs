@@ -1,11 +1,11 @@
 //! RetroAchievements CLI utilities tests
 
 #[cfg(feature = "retroachievements")]
+use std::path::Path;
+#[cfg(feature = "retroachievements")]
 use stitchr_cli::utils::retroachievements::detect_console;
 #[cfg(feature = "retroachievements")]
 use stitchr_features::retroachievements::Console;
-#[cfg(feature = "retroachievements")]
-use std::path::Path;
 
 #[test]
 #[cfg(feature = "retroachievements")]

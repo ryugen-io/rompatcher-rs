@@ -1,9 +1,9 @@
 use bzip2::Compression;
 use bzip2::write::BzEncoder;
 use divan::Bencher;
+use std::io::Write;
 use stitchr_core::PatchFormat;
 use stitchr_formats::bdf::{BdfPatcher, constants::BDF_MAGIC};
-use std::io::Write;
 
 fn main() {
     divan::main();
@@ -40,10 +40,10 @@ fn create_bdf_patch(_old_data: &[u8], new_data: &[u8]) -> Vec<u8> {
 }
 
 const SIZES: &[usize] = &[
-    1024,             // 1KB
-    10 * 1024,        // 10KB
-    100 * 1024,       // 100KB
-    1024 * 1024,      // 1MB
+    1024,        // 1KB
+    10 * 1024,   // 10KB
+    100 * 1024,  // 100KB
+    1024 * 1024, // 1MB
 ];
 
 #[divan::bench(args = SIZES)]

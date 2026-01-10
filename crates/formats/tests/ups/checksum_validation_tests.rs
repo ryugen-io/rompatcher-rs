@@ -1,8 +1,8 @@
 //! UPS checksum validation tests with real patch file
 
+use std::fs;
 use stitchr_core::PatchFormat;
 use stitchr_formats::ups::UpsPatcher;
-use std::fs;
 
 #[test]
 fn test_patch_file_integrity() {

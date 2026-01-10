@@ -1,9 +1,9 @@
 //! Integration tests for APS N64 with real ROM patches
 
-use stitchr_core::PatchFormat;
-use stitchr_formats::aps::n64::ApsN64Patcher;
 use std::fs;
 use std::path::PathBuf;
+use stitchr_core::PatchFormat;
+use stitchr_formats::aps::n64::ApsN64Patcher;
 
 fn test_rom_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))

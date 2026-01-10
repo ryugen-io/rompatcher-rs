@@ -1,9 +1,9 @@
 //! Integration tests for IPS with real ROM patches
 
 use super::helpers::*;
+use std::fs;
 use stitchr_core::PatchFormat;
 use stitchr_formats::ips::IpsPatcher;
-use std::fs;
 
 #[test]
 fn test_sml2dx_patch_checksum() {

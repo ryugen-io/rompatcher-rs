@@ -3,8 +3,8 @@
 use crate::bdf::validate;
 use byteorder::{LittleEndian, ReadBytesExt};
 use bzip2::read::BzDecoder;
-use stitchr_core::Result;
 use std::io::{Cursor, Read, Seek, SeekFrom};
+use stitchr_core::Result;
 
 /// Apply BDF patch to ROM
 pub fn apply_patch(rom: &mut Vec<u8>, patch: &[u8]) -> Result<()> {

@@ -2,8 +2,8 @@
 
 use crate::bdf::constants::{BDF_MAGIC, HEADER_SIZE};
 use byteorder::{LittleEndian, ReadBytesExt};
-use stitchr_core::{PatchError, Result};
 use std::io::{Cursor, Seek, SeekFrom};
+use stitchr_core::{PatchError, Result};
 
 /// Check if the patch data has BDF magic
 pub fn can_handle(data: &[u8]) -> bool {

@@ -1,9 +1,9 @@
 //! File integrity verification tests
 
 use super::helpers::*;
+use std::fs;
 use stitchr_core::PatchFormat;
 use stitchr_formats::ebp::EbpPatcher;
-use std::fs;
 
 #[test]
 fn test_original_rom_unchanged() {

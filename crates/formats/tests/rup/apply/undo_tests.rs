@@ -1,8 +1,8 @@
 //! RUP bidirectional/undo tests
 
+use std::fs;
 use stitchr_core::PatchFormat;
 use stitchr_formats::rup::RupPatcher;
-use std::fs;
 
 #[test]
 fn test_undo_capability() {

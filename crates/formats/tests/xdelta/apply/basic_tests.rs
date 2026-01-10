@@ -1,8 +1,8 @@
 //! xdelta basic apply tests
 
+use std::path::PathBuf;
 use stitchr_core::{PatchError, PatchFormat};
 use stitchr_formats::xdelta::XdeltaPatcher;
-use std::path::PathBuf;
 
 #[test]
 fn test_xdelta_file_apply() -> Result<(), PatchError> {

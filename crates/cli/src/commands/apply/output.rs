@@ -37,7 +37,7 @@ pub fn write_patched_rom(
     // RetroAchievements hash check (if enabled)
     #[cfg(feature = "retroachievements")]
     {
-        crate::utils::retroachievements::check_and_display(patched_rom, output_path);
+        crate::utils::retroachievements::check_and_display(patched_rom, output_path, verbose);
     }
 
     Ok(())

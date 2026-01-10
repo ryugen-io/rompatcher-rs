@@ -1,8 +1,8 @@
 //! PPF basic apply tests
 
+use std::path::PathBuf;
 use stitchr_core::{PatchError, PatchFormat};
 use stitchr_formats::ppf::PpfPatcher;
-use std::path::PathBuf;
 
 #[test]
 fn test_ppf3_apply_simple_patch() -> Result<(), PatchError> {
